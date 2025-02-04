@@ -8,7 +8,7 @@ import AdminSignup from "./components/AdminSignup";
 import AdminLogin from "./components/AdminLogin";
 import AddProduct from "./components/AddProduct";
 import ProductList from "./components/ProductList"
-
+import Order from "./components/Orders"
 //Customer imports
 import CustProduct from "./components/CustProductList"
 
@@ -22,6 +22,7 @@ const App = () => {
         <Route path="/admin/ProductAdd" element={<AddProduct />} />
         <Route path="/admin/ProductList" element={<ProductList />} />
         <Route path="/CustProductList" element={<CustProduct />} />
+        <Route path="/Order" element={<Order />} />
       </Routes>
     </Router>
   );

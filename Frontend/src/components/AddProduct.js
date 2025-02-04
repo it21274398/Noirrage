@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Button, TextField, Grid, Typography, Box, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,45 +21,51 @@ const AddProduct = () => {
     description: "",
     category: "",
     stock: "",
-    image: null, // Change to null for file upload
+    image: null,
+    imagePreview: null,
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProductData({
-      ...productData,
-      [name]: value,
-    });
+    setProductData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProductData({
-        ...productData,
-        image: file, // Store the file itself
-      });
+    if (file && ["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+      setProductData((prevData) => ({
+        ...prevData,
+        image: file,
+        imagePreview: URL.createObjectURL(file),
+      }));
+    } else {
+      toast.error("Only PNG, JPG, and JPEG files are allowed.");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(); // Use FormData to send files
-    formData.append("name", productData.name);
-    formData.append("price", productData.price);
-    formData.append("description", productData.description);
-    formData.append("category", productData.category);
-    formData.append("stock", productData.stock);
-    formData.append("image", productData.image); // Attach image file
+    if (!productData.image) {
+      toast.error("Please upload a product image.");
+      return;
+    }
+
+    const formData = new FormData();
+    Object.entries(productData).forEach(([key, value]) => {
+      if (key !== "imagePreview") formData.append(key, value);
+    });
 
     try {
-      const response = await axios.post("http://localhost:5000/api/products/add", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Important for file uploads
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/products/add",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       toast.success(response.data.message);
       navigate("/admin/ProductList");
     } catch (error) {
@@ -58,7 +74,15 @@ const AddProduct = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "0 auto",
+        padding: 3,
+        boxShadow: 3,
+        borderRadius: 2,
+      }}
+    >
       <Typography variant="h5" gutterBottom>
         Add Product
       </Typography>
@@ -108,9 +132,11 @@ const AddProduct = () => {
                 value={productData.category}
                 onChange={handleChange}
               >
-                <MenuItem value="Electronics">Electronics</MenuItem>
-                <MenuItem value="Clothing">Clothing</MenuItem>
-                <MenuItem value="Furniture">Furniture</MenuItem>
+                {["Electronics", "Clothing", "Furniture"].map((cat) => (
+                  <MenuItem key={cat} value={cat}>
+                    {cat}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -128,14 +154,23 @@ const AddProduct = () => {
           </Grid>
           <Grid item xs={12}>
             <input
-              accept=".png, .jpg, .jpeg"
+              accept="image/png, image/jpeg, image/jpg"
               type="file"
               onChange={handleFileChange}
               required
             />
           </Grid>
+          {productData.imagePreview && (
+            <Grid item xs={12}>
+              <img
+                src={productData.imagePreview}
+                alt="Preview"
+                style={{ width: "100%", borderRadius: 8, marginTop: 10 }}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
-            <Button variant="contained" color="primary" type="submit">
+            <Button variant="contained" color="primary" type="submit" fullWidth>
               Add Product
             </Button>
           </Grid>

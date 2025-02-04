@@ -3,8 +3,10 @@ import { Container, TextField, Button, Typography, Box } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify"; // Import Toast
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 const AdminLogin = () => {
+  const navigate = useNavigate()
   const [admin, setAdmin] = useState({
     email: "",
     password: "",
@@ -20,6 +22,7 @@ const AdminLogin = () => {
       const { data } = await axios.post("http://localhost:5000/api/auth/admin/login", admin);
       localStorage.setItem("adminToken", data.token);
       toast.success("Admin Logged In Successfully");
+      navigate("/Order")
       console.log(data);
     } catch (error) {
       toast.error("Login Failed: " + error.response.data.message);

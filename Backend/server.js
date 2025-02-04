@@ -1,14 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./config/db.js";  // Ensure this path matches your actual file structure
-import path from "path";  // Import path module
-import { fileURLToPath } from "url";  // Required for ES module compatibility
-import fs from "fs";  // File system module for folder creation
+import connectDB from "./config/db.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-// import orderRoutes from "./routes/orderRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 // import paymentRoutes from "./routes/paymentRoutes.js";
 
 // Initialize dotenv and express
@@ -35,7 +35,7 @@ connectDB();
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-// app.use("/api/orders", orderRoutes);
+app.use("/api/orders", orderRoutes);
 // app.use("/api/payments", paymentRoutes);
 
 // Serve static files if necessary (for image uploading or front-end assets)

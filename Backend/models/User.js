@@ -13,5 +13,7 @@ const userSchema = mongoose.Schema(
   }
 );
 
-const Admin = mongoose.model("Admin", userSchema);
+// Check if the model is already defined to prevent overwriting
+const Admin = mongoose.models.Admin || mongoose.model("Admin", userSchema);
+
 export default Admin;

@@ -10,7 +10,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/orders");
-        console.log("Fetched Orders:", response.data); // ✅ Debugging
+        // console.log("Fetched Orders:", response.data); // ✅ Debugging
         setOrders(Array.isArray(response.data) ? response.data : []); // ✅ Ensure it's always an array
       } catch (error) {
         toast.error("Failed to fetch orders");

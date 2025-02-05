@@ -23,7 +23,7 @@ const AdminLogin = () => {
       localStorage.setItem("adminToken", data.token);
       toast.success("Admin Logged In Successfully");
       navigate("/Order")
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       toast.error("Login Failed: " + error.response.data.message);
     }

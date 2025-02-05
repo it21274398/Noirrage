@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1); // State for pagination
+  const [page] = useState(1); // State for pagination
 
   useEffect(() => {
     fetchProducts(page);

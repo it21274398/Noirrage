@@ -22,6 +22,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post("http://localhost:5000/api/auth/admin/register", admin);
+      console.log(data);
       toast.success("Signup successful! "); 
       setTimeout(() => navigate("/Home"), 700); 
     } catch (error) {

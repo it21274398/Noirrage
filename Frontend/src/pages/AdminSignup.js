@@ -23,7 +23,7 @@ const Signup = () => {
     try {
       const { data } = await axios.post("http://localhost:5000/api/auth/admin/register", admin);
       toast.success("Signup successful! "); 
-    //   setTimeout(() => navigate("/login"), 2000); 
+      setTimeout(() => navigate("/Home"), 700); 
     } catch (error) {
         toast.error(error.response?.data?.message || "Signup failed! Try again."); // Show error message
     }

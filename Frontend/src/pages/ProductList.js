@@ -1,30 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Button, Grid, Box } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Grid,
+  Box,
+  CircularProgress,
+} from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1); // State for pagination
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(page);
+  }, [page]); // Fetch products whenever page changes
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/products/");
-      
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:5000/api/products?page=${page}`
+      );
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/products/${id}`);
+      const response = await axios.delete(
+        `http://localhost:5000/api/products/${id}`
+      );
       toast.success(response.data.message);
-      fetchProducts();
+      fetchProducts(page); // Reload products after deletion
     } catch (error) {
       toast.error(error.response?.data.message || "Error deleting product");
     }
@@ -35,15 +51,20 @@ const ProductList = () => {
       <Typography variant="h5" gutterBottom>
         Product List
       </Typography>
-      <Grid container spacing={3}>
-        {products.length === 0 ? (
-          <Typography>No products available</Typography>
-        ) : (
-          products.map((product) => (
+
+      {/* Show loading indicator while data is fetching */}
+      {loading ? (
+        <Box
+          sx={{ display: "flex", justifyContent: "center", padding: "20px" }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+          {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
               <Card>
                 <CardContent>
-                  {/* Check if image exists and render */}
                   {product.image && (
                     <img
                       src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
@@ -65,9 +86,9 @@ const ProductList = () => {
                 </CardContent>
               </Card>
             </Grid>
-          ))
-        )}
-      </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 };

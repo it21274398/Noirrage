@@ -20,14 +20,21 @@ const AdminLogin = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post("http://localhost:5000/api/auth/admin/login", admin);
+  
       localStorage.setItem("adminToken", data.token);
+      if (data.admin && data.admin.email) {
+        localStorage.setItem("adminEmail", data.admin.email); // Store email only if available
+      }
+  
+      axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+  
       toast.success("Admin Logged In Successfully");
-      navigate("/Order")
-      // console.log(data);
+      navigate("/Home"); // Redirect to orders page
     } catch (error) {
-      toast.error("Login Failed: " + error.response.data.message);
+      toast.error(error.response?.data?.message || "Login Failed");
     }
   };
+  
 
   return (
     <Container maxWidth="sm">

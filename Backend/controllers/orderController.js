@@ -4,21 +4,20 @@ import Product from "../models/Product.js";
 // @desc   Create a new order
 export const createOrder = async (req, res) => {
   try {
-    const { products, totalPrice, shippingAddress } = req.body;
+    const { products, totalPrice, shippingDetails } = req.body;
 
     if (!products || products.length === 0) {
       return res.status(400).json({ message: "No products selected" });
     }
 
-    if (!shippingAddress || !shippingAddress.email || !shippingAddress.address || !shippingAddress.contactNo) {
+    if (!shippingDetails || !shippingDetails.email || !shippingDetails.address || !shippingDetails.contactNumber) {
       return res.status(400).json({ message: "Shipping details are required" });
     }
-
     const newOrder = new Order({
       user: req.user._id, // Assuming authentication middleware sets req.user
       products,
       totalPrice,
-      shippingAddress,
+      shippingDetails,
       status: "Pending"
     });
 

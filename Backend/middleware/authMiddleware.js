@@ -131,31 +131,32 @@ export const markAsDelivered = async (req, res) => {
 
 // Protect middleware to verify if the user is authenticated
 export const protect = async (req, res, next) => {
-    let token;
-    
-    // Check if token is sent in headers
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
-            // Get the token from the authorization header
-            token = req.headers.authorization.split(' ')[1];
+  let token;
 
-            // Decode the token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
 
-            // Attach the user information to the request object
-            req.user = await User.findById(decoded.id).select('-password'); // Exclude password from the result
-            next();
-        } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
-        }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded Token:", decoded);
+
+      req.user = await User.findById(decoded.id).select("-password");
+      console.log("User from DB:", req.user);
+
+      if (!req.user) {
+        return res.status(401).json({ message: "User not found, token invalid" });
+      }
+
+      next();
+    } catch (error) {
+      console.error("JWT Error:", error);
+      res.status(401).json({ message: "Not authorized, token failed" });
     }
-
-    // If no token is provided
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
-    }
+  } else {
+    res.status(401).json({ message: "Not authorized, no token" });
+  }
 };
+
 
 // Admin middleware to check if the user is an admin
 export const admin = (req, res, next) => {

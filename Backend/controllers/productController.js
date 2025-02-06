@@ -3,15 +3,15 @@ import Product from "../models/Product.js";
 // @desc   Add a new product (Admin only)
 export const addProduct = async (req, res) => {
   try {
-    const { name, price, description, category, stock, colors, sizes } = req.body;
+    const { name, price, description, category, colors, sizes } = req.body;
     const image = req.file ? req.file.buffer.toString("base64") : null; // Convert image to Base64
 
-    if (!name || !price || !description || !category || !stock || !image || !colors || !sizes) {
+    if (!name || !price || !description || !category || !image || !colors || !sizes) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     // Create new product with Base64 image
-    const newProduct = new Product({ name, price, description, category, image, stock, colors, sizes });
+    const newProduct = new Product({ name, price, description, category, image, colors, sizes });
     await newProduct.save();
 
     res.status(201).json({ message: "Product added successfully", product: newProduct });
@@ -45,10 +45,10 @@ export const getProductById = async (req, res) => {
 // @desc   Update a product (Admin only)
 export const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, category, stock, colors, sizes } = req.body;
+    const { name, price, description, category,  colors, sizes } = req.body;
     const image = req.file ? req.file.buffer.toString("base64") : null; // Convert image to Base64
 
-    const updatedFields = { name, price, description, category, stock, colors, sizes };
+    const updatedFields = { name, price, description, category,  colors, sizes };
     if (image) updatedFields.image = image; // Only update image if provided
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updatedFields, { new: true });

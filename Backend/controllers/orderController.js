@@ -1,88 +1,65 @@
 import Order from "../models/order.js";
+import Product from "../models/Product.js";
 
-// Place an order (User)
+// @desc   Create a new order
 export const createOrder = async (req, res) => {
   try {
-    const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
-    const newOrder = new Order({ orderItems, shippingAddress, paymentMethod, totalPrice });
+    const { products, totalPrice, shippingAddress } = req.body;
+
+    if (!products || products.length === 0) {
+      return res.status(400).json({ message: "No products selected" });
+    }
+
+    if (!shippingAddress || !shippingAddress.email || !shippingAddress.address || !shippingAddress.contactNo) {
+      return res.status(400).json({ message: "Shipping details are required" });
+    }
+
+    const newOrder = new Order({
+      user: req.user._id, // Assuming authentication middleware sets req.user
+      products,
+      totalPrice,
+      shippingAddress,
+      status: "Pending"
+    });
 
     await newOrder.save();
-    res.json({ message: "Order placed successfully", order: newOrder });
+    res.status(201).json({ message: "Order placed successfully", order: newOrder });
   } catch (error) {
-    res.status(500).json({ message: "Error placing order" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Get all orders (Admin)
+// @desc   Get all orders (Admin only)
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("orderItems.product", "name price");
-    res.json(orders);
+    const orders = await Order.find().populate("user", "name email").populate("products.product", "name price");
+    res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching orders" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Get order by ID (User)
-export const getOrderById = async (req, res) => {
+// @desc   Get user orders
+export const getUserOrders = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate("orderItems.product", "name price");
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    res.json(order);
+    const orders = await Order.find({ user: req.user._id }).populate("products.product", "name price");
+    res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching order" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Cancel order (User)
-export const cancelOrder = async (req, res) => {
+// @desc   Mark order as "Shipped" (Admin only)
+export const markOrderShipped = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    if (order.isDelivered) {
-      return res.status(400).json({ message: "Cannot cancel delivered order" });
-    }
-
-    await Order.findByIdAndDelete(req.params.id);
-    res.json({ message: "Order cancelled successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error cancelling order" });
-  }
-};
-
-export const payOrder = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    order.isPaid = true;
-    order.paidAt = Date.now();
+    order.status = "Shipped";
     await order.save();
 
-    res.json({ message: "Order marked as paid" });
+    res.status(200).json({ message: "Order marked as shipped", order });
   } catch (error) {
-    console.error("Error in payOrder:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Mark order as delivered (Admin)
-export const markAsDelivered = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    order.isDelivered = true;
-    order.deliveredAt = new Date();
-    await order.save();
-
-    res.json({ message: "Order marked as delivered" });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating order" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

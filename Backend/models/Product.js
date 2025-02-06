@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
     sizes:{type: String, required: true},
     colors:{type: String, required: true},
     image: { type: String, required: true }, // Store image as Base64
-    stock: { type: Number, required: true },
+    
   },
   { timestamps: true }
 );

@@ -20,7 +20,6 @@ const AddProduct = () => {
     price: "",
     description: "",
     category: "",
-    stock: "",
     image: null,
     imagePreview: null,
     sizes:"",
@@ -74,7 +73,7 @@ const AddProduct = () => {
       toast.error(error.response?.data.message || "Error adding product");
     }
   };
-
+//admin only do this one
   return (
     <Box
       sx={{
@@ -173,18 +172,6 @@ const AddProduct = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Stock"
-              variant="outlined"
-              fullWidth
-              type="number"
-              name="stock"
-              value={productData.stock}
-              onChange={handleChange}
-              required
-            />
           </Grid>
           <Grid item xs={12}>
             <input

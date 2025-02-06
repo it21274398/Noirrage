@@ -23,6 +23,8 @@ const AddProduct = () => {
     stock: "",
     image: null,
     imagePreview: null,
+    sizes:"",
+    colors:""
   });
 
   const navigate = useNavigate();
@@ -135,6 +137,38 @@ const AddProduct = () => {
                 {["Electronics", "Clothing", "Furniture"].map((cat) => (
                   <MenuItem key={cat} value={cat}>
                     {cat}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth required>
+              <InputLabel>Sizes</InputLabel>
+              <Select
+                name="sizes"
+                value={productData.sizes}
+                onChange={handleChange}
+              >
+                {["M", "L", "XL", "XXL"].map((sizes) => (
+                  <MenuItem key={sizes} value={sizes}>
+                    {sizes}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth required>
+              <InputLabel>Colors</InputLabel>
+              <Select
+                name="colors"
+                value={productData.colors}
+                onChange={handleChange}
+              >
+                {["black", "gray", "white"].map((calors) => (
+                  <MenuItem key={calors} value={calors}>
+                    {calors}
                   </MenuItem>
                 ))}
               </Select>

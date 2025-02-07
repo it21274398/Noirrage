@@ -5,7 +5,11 @@ const orderSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     products: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
         quantity: { type: Number, required: true, default: 1 },
         size: { type: String, required: true },
         color: { type: String, required: true },
@@ -18,6 +22,7 @@ const orderSchema = new mongoose.Schema(
       address: { type: String, required: true },
       contactNumber: { type: String, required: true },
     },
+    shippedAt: { type: Date }, // Add a field for shipped date
   },
   { timestamps: true }
 );

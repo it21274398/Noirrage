@@ -7,20 +7,21 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AdminSignup from "./pages/AdminSignup";
 import AdminLogin from "./pages/AdminLogin";
 import AddProduct from "./pages/AddProduct";
-import ProductList from "./pages/ProductList"
-import AdminDashboard from "./pages/AdminDashboard"
+import ProductList from "./pages/ProductList";
+import AdminDashboard from "./pages/AdminDashboard";
 
 //Customer imports
-import CustProduct from "./pages/CustProductList"
-import CustomerOrder from "./pages/CustomerOrder"
+import CustProduct from "./pages/CustProductList";
+import CustomerOrder from "./pages/CustomerOrder";
+
 //Other imports
 import NavBar from "./components/Navbar";
 import Home from "./components/Home";
+
 const App = () => {
   return (
-    
     <Router>
-       <NavBar />
+      <NavBar />
       <ToastContainer position="top-right" autoClose={2000} />
       <Routes>
         <Route path="/admin/signup" element={<AdminSignup />} />

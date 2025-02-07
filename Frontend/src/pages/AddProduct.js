@@ -22,8 +22,8 @@ const AddProduct = () => {
     category: "",
     image: null,
     imagePreview: null,
-    sizes:"",
-    colors:""
+    sizes: "",
+    colors: "",
   });
 
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const AddProduct = () => {
       toast.error(error.response?.data.message || "Error adding product");
     }
   };
-//admin only do this one
+  //admin only do this one
   return (
     <Box
       sx={{
@@ -149,7 +149,7 @@ const AddProduct = () => {
                 value={productData.sizes}
                 onChange={handleChange}
               >
-                {["S","M", "L", "XL", "XXL","XXXL"].map((sizes) => (
+                {["S", "M", "L", "XL", "XXL", "XXXL"].map((sizes) => (
                   <MenuItem key={sizes} value={sizes}>
                     {sizes}
                   </MenuItem>

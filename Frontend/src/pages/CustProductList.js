@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Grid, Box, Button,  } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  Button,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -27,7 +34,7 @@ const ProductList = () => {
 
   const handleOrderNow = (product) => {
     setSelectedProduct(product);
-     navigate("/CustomerOrder")
+    navigate("/CustomerOrder");
   };
 
   const handleBuyNow = () => {
@@ -47,20 +54,30 @@ const ProductList = () => {
           products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
               <Card sx={{ maxWidth: 345, padding: "10px" }}>
-              <img
-                      src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
-                      alt={product.name}
-                      style={{ width: "100%", height: "auto" }}
-                    />
+                <img
+                  src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
+                  alt={product.name}
+                  style={{ width: "100%", height: "auto" }}
+                />
                 <CardContent>
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Price: ${product.price}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                  >
                     {product.description}
                   </Typography>
-                  <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => handleOrderNow(product)}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    onClick={() => handleOrderNow(product)}
+                  >
                     Order Now
                   </Button>
                 </CardContent>

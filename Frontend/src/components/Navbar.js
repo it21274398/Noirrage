@@ -14,8 +14,9 @@ const navItems = [
   { label: "Add Product", path: "/admin/ProductAdd" },
   { label: "See product", path: "/admin/ProductList" },
   { label: "Cos product list", path: "/CustProductList" },
+  { label: "AdminDashboard", path: "/admin/AdminDashboard" },
   { label: "Logout", path: "/" },
-  { label: "AdminDashboard", path: "/AdminDashboard" },
+  
  
 ];
 

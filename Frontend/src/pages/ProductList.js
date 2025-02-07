@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
   Grid,
+  LinearProgress,
   Box,
 } from "@mui/material";
 import axios from "axios";
@@ -48,9 +49,14 @@ const ProductList = () => {
       <Typography variant="h5" gutterBottom>
         Product List
       </Typography>
+      {loading && (
+              <Box sx={{ width: "100%", mb: 2 }}>
+                <LinearProgress color="primary" />
+              </Box>
+            )}
       <Grid container spacing={3}>
         {products.length === 0 ? (
-          <Typography>No products available</Typography>
+          <Typography></Typography>
         ) : (
           products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>

@@ -68,11 +68,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/admin/login");
-  };
-
   return (
     <Container>
       <Box
@@ -82,9 +77,6 @@ const AdminDashboard = () => {
         my={4}
       >
         <Typography variant="h4">Admin Dashboard</Typography>
-        <Button variant="contained" color="secondary" onClick={handleLogout}>
-          Logout
-        </Button>
       </Box>
 
       <Typography variant="h5" sx={{ mt: 3, mb: 2 }}>

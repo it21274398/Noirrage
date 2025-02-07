@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, Typography, Grid, Box, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  Button,
+  LinearProgress,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import PopupModal from "./PopupModal"; // Import the modal component
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,16 +27,13 @@ const ProductList = () => {
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleOrderNow = (product) => {
-    setSelectedProduct(product);
-    setOpen(true); // Open the pop-up
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    navigate("/CustomerOrder");
   };
 
   return (
@@ -38,13 +41,28 @@ const ProductList = () => {
       <Typography variant="h5" gutterBottom>
         Product List
       </Typography>
+      
+      {loading && (
+        <Box sx={{ width: "100%", mb: 2 }}>
+          <LinearProgress color="primary" />
+        </Box>
+      )}
+
       <Grid container spacing={3}>
-        {products.length === 0 ? (
-          <Typography>No products available</Typography>
+        {!loading && products.length === 0 ? (
+          <Typography></Typography>
         ) : (
           products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <Card sx={{ width: 300, height: 400, display: "flex", flexDirection: "column", padding: "10px" }}>
+              <Card
+                sx={{
+                  width: 300,
+                  height: 400,
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "10px",
+                }}
+              >
                 <Box
                   sx={{
                     height: 200,
@@ -78,7 +96,11 @@ const ProductList = () => {
                   <Typography variant="body2" color="text.secondary">
                     Price: ${product.price}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                  >
                     {product.description}
                   </Typography>
                   <Button
@@ -96,9 +118,6 @@ const ProductList = () => {
           ))
         )}
       </Grid>
-
-      {/* Pop-up component */}
-      <PopupModal open={open} handleClose={handleClose} product={selectedProduct} />
     </Box>
   );
 };

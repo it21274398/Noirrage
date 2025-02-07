@@ -20,9 +20,10 @@ const AddProduct = () => {
     price: "",
     description: "",
     category: "",
-    stock: "",
     image: null,
     imagePreview: null,
+    sizes: "",
+    colors: "",
   });
 
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const AddProduct = () => {
       toast.error(error.response?.data.message || "Error adding product");
     }
   };
-
+  //admin only do this one
   return (
     <Box
       sx={{
@@ -141,16 +142,36 @@ const AddProduct = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Stock"
-              variant="outlined"
-              fullWidth
-              type="number"
-              name="stock"
-              value={productData.stock}
-              onChange={handleChange}
-              required
-            />
+            <FormControl fullWidth required>
+              <InputLabel>Sizes</InputLabel>
+              <Select
+                name="sizes"
+                value={productData.sizes}
+                onChange={handleChange}
+              >
+                {["S", "M", "L", "XL", "XXL", "XXXL"].map((sizes) => (
+                  <MenuItem key={sizes} value={sizes}>
+                    {sizes}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth required>
+              <InputLabel>Colors</InputLabel>
+              <Select
+                name="colors"
+                value={productData.colors}
+                onChange={handleChange}
+              >
+                {["Black", "Gray", "White"].map((calors) => (
+                  <MenuItem key={calors} value={calors}>
+                    {calors}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <input

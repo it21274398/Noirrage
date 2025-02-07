@@ -23,11 +23,13 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // Enable CORS for all origins or just from localhost:3000
-app.use(cors({
-  origin: "http://localhost:3000", // Or "*" for all origins
-  methods: "GET,POST,PUT,DELETE", // Allow methods as per your API
-  allowedHeaders: "Content-Type, Authorization", // Allow specific headers
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Or "*" for all origins
+    methods: "GET,POST,PUT,DELETE", // Allow methods as per your API
+    allowedHeaders: "Content-Type, Authorization", // Allow specific headers
+  })
+);
 
 // Connect to MongoDB
 connectDB();

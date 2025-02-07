@@ -1,7 +1,7 @@
 import React from 'react';
-import { Container, Grid, Typography, Button, Card, CardMedia, CardContent, Box } from '@mui/material';
+import { Container,  Typography,  Card, CardMedia, CardContent, Box } from '@mui/material';
 import { styled } from '@mui/system';
-import CustProduct from "../pages/ProductList"
+import AboutUs from "../components/AboutUs"
 
 
 const HeroSection = styled(Box)(({ theme }) => ({
@@ -13,25 +13,6 @@ const HeroSection = styled(Box)(({ theme }) => ({
   color: 'white',
   textAlign: 'center',
 }));
-
-const ProductCard = ({ image, title, price }) => (
-  <Card sx={{ maxWidth: 345 }}>
-    <CardMedia
-      component="img"
-      alt={title}
-      height="200"
-      image={image}
-    />
-    <CardContent>
-      <Typography gutterBottom variant="h6" component="div">
-        {title}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {price}
-      </Typography>
-    </CardContent>
-  </Card>
-);
 
 const Home = () => {
   return (
@@ -45,8 +26,8 @@ const Home = () => {
       </HeroSection>
 
       {/* Featured Products Section */}
-      <Container sx={{ py: 4 }}>
-        <CustProduct/>
+      <Container>
+        <AboutUs/>
       </Container>
 
     

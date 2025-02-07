@@ -5,8 +5,8 @@ import {
   Typography,
   Button,
   Grid,
+  LinearProgress,
   Box,
-  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -14,11 +14,9 @@ import { toast } from "react-toastify";
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1); // State for pagination
-
   useEffect(() => {
-    fetchProducts(page);
-  }, [page]); // Fetch products whenever page changes
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async (page) => {
     try {
@@ -40,7 +38,7 @@ const ProductList = () => {
         `http://localhost:5000/api/products/${id}`
       );
       toast.success(response.data.message);
-      fetchProducts(page); // Reload products after deletion
+      fetchProducts();
     } catch (error) {
       toast.error(error.response?.data.message || "Error deleting product");
     }
@@ -51,27 +49,24 @@ const ProductList = () => {
       <Typography variant="h5" gutterBottom>
         Product List
       </Typography>
-
-      {/* Show loading indicator while data is fetching */}
-      {loading ? (
-        <Box
-          sx={{ display: "flex", justifyContent: "center", padding: "20px" }}
-        >
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {products.map((product) => (
+      {loading && (
+              <Box sx={{ width: "100%", mb: 2 }}>
+                <LinearProgress color="primary" />
+              </Box>
+            )}
+      <Grid container spacing={3}>
+        {products.length === 0 ? (
+          <Typography></Typography>
+        ) : (
+          products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
               <Card>
+                <img
+                  src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
+                  alt={product.name}
+                  style={{ width: "100%", height: "auto" }}
+                />
                 <CardContent>
-                  {product.image && (
-                    <img
-                      src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
-                      alt={product.name}
-                      style={{ width: "100%", height: "auto" }}
-                    />
-                  )}
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography>Price: ${product.price}</Typography>
                   <Typography>Stock: {product.stock}</Typography>
@@ -86,9 +81,9 @@ const ProductList = () => {
                 </CardContent>
               </Card>
             </Grid>
-          ))}
-        </Grid>
-      )}
+          ))
+        )}
+      </Grid>
     </Box>
   );
 };

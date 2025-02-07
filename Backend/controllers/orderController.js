@@ -1,58 +1,67 @@
 import Order from "../models/order.js";
+import Product from "../models/Product.js";
 
-// Place an order (User)
+// @desc   Create a new order
 export const createOrder = async (req, res) => {
   try {
-    const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
-    const newOrder = new Order({ orderItems, shippingAddress, paymentMethod, totalPrice });
+    const { products, totalPrice, shippingDetails } = req.body;
 
-    await newOrder.save();
-    res.json({ message: "Order placed successfully", order: newOrder });
-  } catch (error) {
-    res.status(500).json({ message: "Error placing order" });
-  }
-};
-
-// Get all orders (Admin)
-export const getAllOrders = async (req, res) => {
-  try {
-    const orders = await Order.find().populate("orderItems.product", "name price");
-    res.json(orders);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching orders" });
-  }
-};
-
-// Get order by ID (User)
-export const getOrderById = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id).populate("orderItems.product", "name price");
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    res.json(order);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching order" });
-  }
-};
-
-// Cancel order (User)
-export const cancelOrder = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    if (order.isDelivered) {
-      return res.status(400).json({ message: "Cannot cancel delivered order" });
+    if (!products || products.length === 0) {
+      return res.status(400).json({ message: "No products selected" });
     }
 
-    await Order.findByIdAndDelete(req.params.id);
-    res.json({ message: "Order cancelled successfully" });
+    if (
+      !shippingDetails ||
+      !shippingDetails.email ||
+      !shippingDetails.address ||
+      !shippingDetails.contactNumber
+    ) {
+      return res.status(400).json({ message: "Shipping details are required" });
+    }
+    const newOrder = new Order({
+      user: req.user._id, // Assuming authentication middleware sets req.user
+      products,
+      totalPrice,
+      shippingDetails,
+      status: "Pending",
+    });
+
+    await newOrder.save();
+    res
+      .status(201)
+      .json({ message: "Order placed successfully", order: newOrder });
   } catch (error) {
-    res.status(500).json({ message: "Error cancelling order" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-export const payOrder = async (req, res) => {
+// @desc   Get all orders (Admin only)
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .populate("products.product", "name price");
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// @desc   Get user orders
+export const getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id }).populate(
+      "products.product",
+      "name price"
+    );
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// ✅ Mark order as Shipped
+export const markOrderShipped = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
 
@@ -60,29 +69,15 @@ export const payOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    order.isPaid = true;
-    order.paidAt = Date.now();
-    await order.save();
+    // Update order status to "Shipped"
+    order.status = "Shipped";
+    order.shippedAt = new Date(); // Set shipped date
 
-    res.json({ message: "Order marked as paid" });
+    const updatedOrder = await order.save();
+    res.json(updatedOrder); // Respond with the updated order details
   } catch (error) {
-    console.error("Error in payOrder:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// Mark order as delivered (Admin)
-export const markAsDelivered = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-
-    order.isDelivered = true;
-    order.deliveredAt = new Date();
-    await order.save();
-
-    res.json({ message: "Order marked as delivered" });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating order" });
+    res
+      .status(500)
+      .json({ message: "Error updating order status", error: error.message });
   }
 };

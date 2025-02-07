@@ -149,7 +149,7 @@ const AddProduct = () => {
                 value={productData.sizes}
                 onChange={handleChange}
               >
-                {["M", "L", "XL", "XXL"].map((sizes) => (
+                {["S","M", "L", "XL", "XXL","XXXL"].map((sizes) => (
                   <MenuItem key={sizes} value={sizes}>
                     {sizes}
                   </MenuItem>
@@ -165,7 +165,7 @@ const AddProduct = () => {
                 value={productData.colors}
                 onChange={handleChange}
               >
-                {["black", "gray", "white"].map((calors) => (
+                {["Black", "Gray", "White"].map((calors) => (
                   <MenuItem key={calors} value={calors}>
                     {calors}
                   </MenuItem>

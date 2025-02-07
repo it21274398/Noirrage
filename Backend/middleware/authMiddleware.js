@@ -129,46 +129,61 @@ export const markAsDelivered = async (req, res) => {
   }
 };
 
-
 export const protect = async (req, res, next) => {
   let token;
 
-  // Check if the Authorization header contains a Bearer token
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    try {
-      // Extract the token from the header
-      token = req.headers.authorization.split(" ")[1];
+      try {
+          token = req.headers.authorization.split(" ")[1]; // Extract token
+          console.log("Received Token:", token); // Debugging
 
-      // Verify the token using the secret key
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded Token:", decoded);
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          req.user = await User.findById(decoded.id).select("-password"); // Attach user to request
 
-      // Find the user from the token payload
-      req.user = await User.findById(decoded.id).select("-password");
-      console.log("Authenticated User:", req.user);
+          console.log("Decoded User:", req.user); // Check if user is fetched
 
-      // If no user is found, return an error
-      if (!req.user) {
-        return res.status(401).json({ message: "User not found. Token is invalid or expired." });
+          next();
+      } catch (error) {
+          console.error("Token Verification Failed:", error);
+          return res.status(401).json({ message: "Not authorized, token failed" });
       }
-
-      // Proceed to the next middleware
-      next();
-    } catch (error) {
-      console.error("JWT Verification Error:", error.message);
-      return res.status(401).json({ message: "Unauthorized access. Invalid token." });
-    }
   } else {
-    return res.status(401).json({ message: "Unauthorized access. Token missing." });
+      return res.status(401).json({ message: "No token, authorization denied" });
+  }
+};
+
+export const admin = (req, res, next) => {
+  console.log("Checking Admin Status:", req.user);
+
+  if (req.user && req.user.isAdmin) {
+      next();
+  } else {
+      console.error("Admin Authorization Failed");
+      res.status(401).json({ message: "Not authorized, admin privileges required" });
   }
 };
 
 
-// Admin middleware to check if the user is an admin
-export const admin = (req, res, next) => {
-    if (req.user && req.user.isAdmin) {
+
+export const authenticateUser = async (req, res, next) => {
+    try {
+        const token = req.header("Authorization")?.replace("Bearer ", "");
+        if (!token) {
+            return res.status(401).json({ message: "Authentication token required" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.status(401).json({ message: "Invalid token" });
+        }
+
+        console.log("Authenticated User:", user); // Debugging
+
+        req.user = user; // Attach user to request
         next();
-    } else {
-        res.status(401).json({ message: 'Not authorized, admin privileges required' });
+    } catch (error) {
+        res.status(401).json({ message: "Invalid or expired token", error: error.message });
     }
 };

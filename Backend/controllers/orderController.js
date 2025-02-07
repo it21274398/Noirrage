@@ -48,11 +48,16 @@ export const getUserOrders = async (req, res) => {
   }
 };
 
+
+
 // @desc   Mark order as "Shipped" (Admin only)
 export const markOrderShipped = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
 
     order.status = "Shipped";
     await order.save();

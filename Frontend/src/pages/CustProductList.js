@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Grid, Box, Button, Modal, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, Typography, Grid, Box, Button,  } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -27,7 +27,7 @@ const ProductList = () => {
 
   const handleOrderNow = (product) => {
     setSelectedProduct(product);
-    setOpen(true);  // Open modal
+     navigate("/CustomerOrder")
   };
 
   const handleBuyNow = () => {
@@ -69,35 +69,6 @@ const ProductList = () => {
           ))
         )}
       </Grid>
-
-      {/* Order Modal */}
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <Box sx={{ width: 400, backgroundColor: "white", margin: "auto", padding: 3, marginTop: 10, borderRadius: 2 }}>
-          <Typography variant="h6">Order Product</Typography>
-          {selectedProduct && (
-            <>
-              <img src={selectedProduct.image} alt={selectedProduct.name} width="100%" height="200px" style={{ marginTop: "10px" }} />
-              <Typography variant="h6">{selectedProduct.name}</Typography>
-              <Typography>Price: ${selectedProduct.price}</Typography>
-              <Typography>Select Size:</Typography>
-              <Select value={size} onChange={(e) => setSize(e.target.value)} fullWidth>
-                <MenuItem value="S">Small</MenuItem>
-                <MenuItem value="M">Medium</MenuItem>
-                <MenuItem value="L">Large</MenuItem>
-              </Select>
-              <Typography>Select Color:</Typography>
-              <Select value={color} onChange={(e) => setColor(e.target.value)} fullWidth>
-                <MenuItem value="Red">Red</MenuItem>
-                <MenuItem value="Blue">Blue</MenuItem>
-                <MenuItem value="Black">Black</MenuItem>
-              </Select>
-              <Button variant="contained" color="secondary" fullWidth sx={{ mt: 2 }} onClick={handleBuyNow}>
-                Buy Now
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
     </Box>
   );
 };

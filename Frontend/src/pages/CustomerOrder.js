@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Container, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel, Box } from "@mui/material";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Box,
+} from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -25,7 +35,7 @@ const OrderForm = () => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/products");
       setProducts(data);
-      console.log("Products fetched",data);
+      console.log("Products fetched", data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -49,13 +59,11 @@ const OrderForm = () => {
       await axios.post("http://localhost:5000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` }, // Send token in headers
       });
-      console.log(token)
+      console.log(token);
       toast.success("Order Placed Successfully!");
     } catch (error) {
-
-      console.log(token,error)
+      console.log(token, error);
       toast.error(error.response?.data?.message || "Failed to place order.");
-      
     }
   };
 
@@ -67,11 +75,16 @@ const OrderForm = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>Place an Order</Typography>
+        <Typography variant="h5" gutterBottom>
+          Place an Order
+        </Typography>
         <form onSubmit={handleOrderSubmit}>
           <FormControl fullWidth margin="normal">
             <InputLabel>Select Product</InputLabel>
-            <Select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
+            <Select
+              value={selectedProduct}
+              onChange={(e) => setSelectedProduct(e.target.value)}
+            >
               {products.map((product) => (
                 <MenuItem key={product._id} value={product._id}>
                   {product.name} - ${product.price}
@@ -80,16 +93,94 @@ const OrderForm = () => {
             </Select>
           </FormControl>
 
-          <TextField label="Quantity" type="number" fullWidth margin="normal" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
-          <TextField label="Size" fullWidth margin="normal" value={size} onChange={(e) => setSize(e.target.value)} required />
-          <TextField label="Color" fullWidth margin="normal" value={color} onChange={(e) => setColor(e.target.value)} required />
+          <TextField
+            label="Quantity"
+            type="number"
+            fullWidth
+            margin="normal"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            required
+          />
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Size</InputLabel>
+            <Select
+              label="Size"
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+            >
+              <MenuItem value="S">Small</MenuItem>
+              <MenuItem value="M">Medium</MenuItem>
+              <MenuItem value="L">Large</MenuItem>
+              <MenuItem value="XL">Large</MenuItem>
+              <MenuItem value="XXL">Large</MenuItem>
+              <MenuItem value="XXXL">Large</MenuItem>
+              {/* Add more sizes as needed */}
+            </Select>
+          </FormControl>
 
-          <Typography variant="h6" sx={{ mt: 2 }}>Shipping Details</Typography>
-          <TextField label="Email" type="email" fullWidth margin="normal" value={shippingDetails.email} onChange={(e) => setShippingDetails({ ...shippingDetails, email: e.target.value })} required />
-          <TextField label="Address" fullWidth margin="normal" value={shippingDetails.address} onChange={(e) => setShippingDetails({ ...shippingDetails, address: e.target.value })} required />
-          <TextField label="Contact Number" fullWidth margin="normal" value={shippingDetails.contactNumber} onChange={(e) => setShippingDetails({ ...shippingDetails, contactNumber: e.target.value })} required />
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Color</InputLabel>
+            <Select
+              label="Color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            >
+              <MenuItem value="Black">Red</MenuItem>
+              <MenuItem value="Gray">Blue</MenuItem>
+              <MenuItem value="White">Green</MenuItem>
+              {/* Add more colors as needed */}
+            </Select>
+          </FormControl>
 
-          <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Shipping Details
+          </Typography>
+          <TextField
+            label="Email"
+            type="email"
+            fullWidth
+            margin="normal"
+            value={shippingDetails.email}
+            onChange={(e) =>
+              setShippingDetails({ ...shippingDetails, email: e.target.value })
+            }
+            required
+          />
+          <TextField
+            label="Address"
+            fullWidth
+            margin="normal"
+            value={shippingDetails.address}
+            onChange={(e) =>
+              setShippingDetails({
+                ...shippingDetails,
+                address: e.target.value,
+              })
+            }
+            required
+          />
+          <TextField
+            label="Contact Number"
+            fullWidth
+            margin="normal"
+            value={shippingDetails.contactNumber}
+            onChange={(e) =>
+              setShippingDetails({
+                ...shippingDetails,
+                contactNumber: e.target.value,
+              })
+            }
+            required
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             Place Order
           </Button>
         </form>

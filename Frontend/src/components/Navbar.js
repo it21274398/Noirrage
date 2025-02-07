@@ -15,6 +15,8 @@ const navItems = [
   { label: "See product", path: "/admin/ProductList" },
   { label: "Cos product list", path: "/CustProductList" },
   { label: "Logout", path: "/" },
+  { label: "AdminDashboard", path: "/AdminDashboard" },
+ 
 ];
 
 const NavBar = () => {

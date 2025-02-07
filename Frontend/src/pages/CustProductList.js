@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Box,
-  Button,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, Typography, Grid, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import PopupModal from "./PopupModal"; // Import the modal component
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -34,12 +26,11 @@ const ProductList = () => {
 
   const handleOrderNow = (product) => {
     setSelectedProduct(product);
-    navigate("/CustomerOrder");
+    setOpen(true); // Open the pop-up
   };
 
-  const handleBuyNow = () => {
+  const handleClose = () => {
     setOpen(false);
-    navigate("/order", { state: { product: selectedProduct, size, color } });
   };
 
   return (
@@ -53,22 +44,41 @@ const ProductList = () => {
         ) : (
           products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <Card sx={{ maxWidth: 345, padding: "10px" }}>
-                <img
-                  src={`data:image/jpeg;base64,${product.image}`} // Handling Base64 image
-                  alt={product.name}
-                  style={{ width: "100%", height: "auto" }}
-                />
-                <CardContent>
+              <Card sx={{ width: 300, height: 400, display: "flex", flexDirection: "column", padding: "10px" }}>
+                <Box
+                  sx={{
+                    height: 200,
+                    width: "100%",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={`data:image/jpeg;base64,${product.image}`}
+                    alt={product.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: "calc(100% - 200px)",
+                    padding: "10px",
+                  }}
+                >
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Price: ${product.price}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
-                  >
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                     {product.description}
                   </Typography>
                   <Button
@@ -86,6 +96,9 @@ const ProductList = () => {
           ))
         )}
       </Grid>
+
+      {/* Pop-up component */}
+      <PopupModal open={open} handleClose={handleClose} product={selectedProduct} />
     </Box>
   );
 };

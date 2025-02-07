@@ -17,6 +17,7 @@ import CustomerOrder from "./pages/CustomerOrder";
 //Other imports
 import NavBar from "./components/Navbar";
 import Home from "./components/Home";
+import AboutUs from "./components/AboutUs";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/admin/signup" element={<AdminSignup />} />
         <Route path="/" element={<AdminLogin />} />
         <Route path="/Home" element={<Home />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/admin/ProductAdd" element={<AddProduct />} />
         <Route path="/admin/ProductList" element={<ProductList />} />
         <Route path="/CustProductList" element={<CustProduct />} />

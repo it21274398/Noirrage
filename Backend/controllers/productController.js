@@ -1,44 +1,43 @@
 import Product from "../models/Product.js";
 
-// @desc   Add a new product (Admin only)
+// ✅ Add a new product with image upload
 export const addProduct = async (req, res) => {
   try {
-    const { name, price, description, category, colors, sizes } = req.body;
-    const image = req.file ? req.file.buffer.toString("base64") : null; // Convert image to Base64
+    console.log("Received Body:", req.body); // ✅ Debugging
+    console.log("Received File:", req.file); // ✅ Debugging
 
-    if (
-      !name ||
-      !price ||
-      !description ||
-      !category ||
-      !image ||
-      !colors ||
-      !sizes
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
+    const { name, price, description, category, sizes, colors } = req.body;
+
+    if (!name || !price || !description || !category || !sizes || !colors) {
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Create new product with Base64 image
+    // Ensure sizes and colors are arrays
+    const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
+    const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
+
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
     const newProduct = new Product({
       name,
       price,
       description,
       category,
-      image,
-      colors,
-      sizes,
+      sizes: sizesArray,
+      colors: colorsArray,
+      image: imageUrl,
     });
-    await newProduct.save();
 
-    res
-      .status(201)
-      .json({ message: "Product added successfully", product: newProduct });
+    await newProduct.save();
+    return res.status(201).json({ message: "Product added successfully", product: newProduct });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error adding product:", error); // ✅ Log error
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// @desc   Get all products
+
+// ✅ Get all products
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -48,7 +47,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// @desc   Get single product
+// ✅ Get single product
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -60,14 +59,14 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// @desc   Update a product (Admin only)
+// ✅ Update a product (Admin only)
 export const updateProduct = async (req, res) => {
   try {
     const { name, price, description, category, colors, sizes } = req.body;
-    const image = req.file ? req.file.buffer.toString("base64") : null; // Convert image to Base64
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const updatedFields = { name, price, description, category, colors, sizes };
-    if (image) updatedFields.image = image; // Only update image if provided
+    const updatedFields = { name, price, description, category, colors: colors.split(","), sizes: sizes.split(",") };
+    if (imageUrl) updatedFields.image = imageUrl;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -78,18 +77,13 @@ export const updateProduct = async (req, res) => {
     if (!updatedProduct)
       return res.status(404).json({ message: "Product not found" });
 
-    res
-      .status(200)
-      .json({
-        message: "Product updated successfully",
-        product: updatedProduct,
-      });
+    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// @desc   Delete a product (Admin only)
+// ✅ Delete a product (Admin only)
 export const deleteProduct = async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);

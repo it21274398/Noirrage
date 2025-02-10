@@ -90,8 +90,8 @@ const Cart = () => {
                     <img
                       
                       alt={item.product?.name}
-                      src={`data:image/jpeg;base64,${item.product?.image}`}
-              
+
+                      src={`http://localhost:5000${item.product?.image}`}
                       style={{
                         width: "50%",
                         maxHeight: "150px",

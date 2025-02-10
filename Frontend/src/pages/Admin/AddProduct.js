@@ -22,15 +22,26 @@ const AddProduct = () => {
     category: "",
     image: null,
     imagePreview: null,
-    sizes: "",
-    colors: "",
+    sizes: [],
+    colors: [],
   });
   const admintoken = localStorage.getItem("adminToken"); // Get token from localStorage
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProductData((prevData) => ({ ...prevData, [name]: value }));
+    // Handle multiple selections for sizes and colors
+    if (name === "sizes" || name === "colors") {
+      setProductData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    } else {
+      setProductData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleFileChange = (e) => {
@@ -47,8 +58,7 @@ const AddProduct = () => {
   };
 
   const handleSubmit = async (e) => {
-
-    //if token not found redrect to admin login
+    //if token not found redirect to admin login
     if (!admintoken) {
       console.error("No admin token found");
       navigate("/admin/login"); // Redirect if no token
@@ -80,7 +90,7 @@ const AddProduct = () => {
       toast.error(error.response?.data.message || "Error adding product");
     }
   };
-  //admin only do this one
+
   return (
     <Box
       sx={{
@@ -148,33 +158,37 @@ const AddProduct = () => {
               </Select>
             </FormControl>
           </Grid>
+          {/* Sizes Selection */}
           <Grid item xs={12}>
             <FormControl fullWidth required>
               <InputLabel>Sizes</InputLabel>
               <Select
                 name="sizes"
+                multiple
                 value={productData.sizes}
                 onChange={handleChange}
               >
-                {["S", "M", "L", "XL", "XXL", "XXXL"].map((sizes) => (
-                  <MenuItem key={sizes} value={sizes}>
-                    {sizes}
+                {["S", "M", "L", "XL", "XXL", "XXXL"].map((size) => (
+                  <MenuItem key={size} value={size}>
+                    {size}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
+          {/* Colors Selection */}
           <Grid item xs={12}>
             <FormControl fullWidth required>
               <InputLabel>Colors</InputLabel>
               <Select
                 name="colors"
+                multiple
                 value={productData.colors}
                 onChange={handleChange}
               >
-                {["Black", "Gray", "White"].map((calors) => (
-                  <MenuItem key={calors} value={calors}>
-                    {calors}
+                {["Black", "Gray", "White"].map((color) => (
+                  <MenuItem key={color} value={color}>
+                    {color}
                   </MenuItem>
                 ))}
               </Select>

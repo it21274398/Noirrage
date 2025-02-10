@@ -1,11 +1,8 @@
 import Product from "../models/Product.js";
 
-// ✅ Add a new product with image upload
+// ✅ Add a new product with image upload and sizes/colors handling
 export const addProduct = async (req, res) => {
   try {
-    console.log("Received Body:", req.body); // ✅ Debugging
-    console.log("Received File:", req.file); // ✅ Debugging
-
     const { name, price, description, category, sizes, colors } = req.body;
 
     if (!name || !price || !description || !category || !sizes || !colors) {
@@ -36,8 +33,7 @@ export const addProduct = async (req, res) => {
   }
 };
 
-
-// ✅ Get all products
+// ✅ Get all products (with sizes and colors)
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -47,7 +43,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// ✅ Get single product
+// ✅ Get single product (with sizes and colors)
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -59,13 +55,17 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// ✅ Update a product (Admin only)
+// ✅ Update a product (Admin only), including size and color updates
 export const updateProduct = async (req, res) => {
   try {
     const { name, price, description, category, colors, sizes } = req.body;
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const updatedFields = { name, price, description, category, colors: colors.split(","), sizes: sizes.split(",") };
+    // Convert sizes and colors to arrays if needed
+    const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
+    const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
+
+    const updatedFields = { name, price, description, category, colors: colorsArray, sizes: sizesArray };
     if (imageUrl) updatedFields.image = imageUrl;
 
     const updatedProduct = await Product.findByIdAndUpdate(

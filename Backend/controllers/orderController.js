@@ -18,6 +18,31 @@ export const createOrder = async (req, res) => {
     ) {
       return res.status(400).json({ message: "Shipping details are required" });
     }
+
+    // Validate and check if each product has valid color and size selected
+    for (let item of products) {
+      const { product, size, color, quantity } = item;
+
+      if (!size || !color) {
+        return res.status(400).json({ message: "Size and color are required for each product" });
+      }
+
+      // Ensure the product exists in the database
+      const foundProduct = await Product.findById(product);
+      if (!foundProduct) {
+        return res.status(400).json({ message: `Product not found for ID: ${product}` });
+      }
+
+      // Check if the selected size and color are valid for the product
+      if (!foundProduct.sizes.includes(size)) {
+        return res.status(400).json({ message: `Invalid size selected for ${foundProduct.name}` });
+      }
+
+      if (!foundProduct.colors.includes(color)) {
+        return res.status(400).json({ message: `Invalid color selected for ${foundProduct.name}` });
+      }
+    }
+
     const newOrder = new Order({
       user: req.user._id, // Assuming authentication middleware sets req.user
       products,
@@ -40,7 +65,7 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("user", "name email")
-      .populate("products.product", "name price");
+      .populate("products.product", "name price sizes colors");
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -50,13 +75,24 @@ export const getAllOrders = async (req, res) => {
 // @desc   Get user orders
 export const getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate(
-      "products.product",
-      "name price"
-    );
+    // Check if req.user is present
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ message: "User not authenticated" });
+    }
+
+    // Fetch orders for the authenticated user
+    const orders = await Order.find({ user: req.user._id })
+      .populate("products.product", "name price sizes colors");
+
+    // Check if no orders are found
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
     res.status(200).json(orders);
   } catch (error) {
-    console.log(err)
+    // Log the error and return a more detailed message
+    console.log(error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

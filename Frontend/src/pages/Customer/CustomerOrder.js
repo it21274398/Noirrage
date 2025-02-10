@@ -5,10 +5,9 @@ import {
   Button,
   Typography,
   MenuItem,
-  Grid,
-  Select,
   FormControl,
   InputLabel,
+  Select,
   Box,
 } from "@mui/material";
 import axios from "axios";
@@ -17,11 +16,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const OrderForm = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // Track current step
   const location = useLocation();
-  const productId = location.state?.productId || null; // Get cart item ID
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState("");
+  const productId = location.state?.productId || null;
+  const [step, setStep] = useState(1); // Track current step
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
@@ -30,94 +28,54 @@ const OrderForm = () => {
     address: "",
     contactNumber: "",
   });
-  const handleNext = () => {
-    setStep(2); // Go to next step (Shipping Details)
-  };
-
-  const handleBack = () => {
-    setStep(1); // Go to next step (Shipping Details)
-  };
+  const [availableColors, setAvailableColors] = useState([]);
+  const [availableSizes, setAvailableSizes] = useState([]);
 
   const token = localStorage.getItem("userToken"); // Get token from localStorage
 
   useEffect(() => {
     if (productId) {
-      fetchProducts();
+      fetchProduct();
     }
   }, [productId]);
 
-  const fetchProducts = async () => {
+  const fetchProduct = async () => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/products");
-
-      if (data) {
-        setProducts(data); // Store all products
-      }
-
-      if (data && productId) {
-        const selected = data.find((p) => p._id === productId);
-        if (selected) {
-          setSelectedProduct(selected);
-        }
-      }
+      const selected = data.find((p) => p._id === productId);
+      setSelectedProduct(selected);
+      setAvailableColors(selected.colors || []);
+      setAvailableSizes(selected.sizes || []);
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
   };
 
+  const handleNext = () => setStep(2); // Go to next step (Shipping Details)
+  const handleBack = () => setStep(1); // Go to previous step (Product Selection)
+
   const handleOrderSubmit = async (e) => {
+    e.preventDefault();
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       return;
     }
 
     const orderData = {
-      products: [
-        {
-          product: selectedProduct?._id,
-          quantity,
-          size,
-          color,
-        },
-      ],
-      totalPrice: calculateTotalPrice(), // Ensure function is called properly
+      products: [{ product: selectedProduct?._id, quantity, size, color }],
+      totalPrice: selectedProduct?.price * quantity,
       shippingDetails,
     };
 
     try {
       await axios.post("http://localhost:5000/api/orders", orderData, {
-        headers: { Authorization: `Bearer ${token}` }, // Send token in headers
+        headers: { Authorization: `Bearer ${token}` },
       });
-      //console.log(orderData);
       toast.success("Order Placed Successfully!");
-      navigate("/CustProductList"); // Redirect if no token
+      navigate("/CustProductList"); // Redirect after order is placed
     } catch (error) {
-      console.log("Order Placed Successfully!", error);
       toast.error(error.response?.data?.message || "Failed to place order.");
     }
-  };
-
-  const handleAddToCart = async (productId) => {
-    if (!token) {
-      toast.error("Unauthorized! Please log in.");
-      return;
-    }
-
-    try {
-      await axios.post(
-        "http://localhost:5000/api/cart/add",
-        { productId, qty: quantity, size, color }, // Use productId
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Added to Cart Successfully!");
-      navigate("/CustProductList");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to add to cart.");
-    }
-  };
-
-  const calculateTotalPrice = () => {
-    return selectedProduct ? selectedProduct.price * quantity : 0;
   };
 
   return (
@@ -126,58 +84,61 @@ const OrderForm = () => {
         <Typography variant="h5" gutterBottom>
           Place an Order
         </Typography>
-
         <form onSubmit={handleOrderSubmit}>
-           <FormControl fullWidth margin="normal">
-            <Typography variant="h6" sx={{ mt: 1 }}>
-              {selectedProduct ? selectedProduct.name : "No product selected"}
-            </Typography>
-          </FormControl>
-          {/* Step 1: Quantity, Size, Color */}
-          {step === 1 && (
+          {/* Step 1: Product selection */}
+          {step === 1 && selectedProduct && (
             <>
+              <Typography variant="h6">{selectedProduct.name}</Typography>
               <TextField
                 label="Quantity"
                 type="number"
                 fullWidth
                 margin="normal"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => setQuantity(Number(e.target.value))}
                 required
               />
-
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel>Size</InputLabel>
-                <Select
-                  label="Size"
-                  value={size}
-                  onChange={(e) => setSize(e.target.value)}
-                >
-                  <MenuItem value="S">Small</MenuItem>
-                  <MenuItem value="L">Large</MenuItem>
-                  <MenuItem value="XL">X-Large</MenuItem>
-                  <MenuItem value="XXL">XX-Large</MenuItem>
-                </Select>
-              </FormControl>
-
               <FormControl fullWidth margin="normal" required>
                 <InputLabel>Color</InputLabel>
                 <Select
-                  label="Color"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
                 >
-                  <MenuItem value="Black">Black</MenuItem>
-                  <MenuItem value="Gray">Gray</MenuItem>
-                  <MenuItem value="White">White</MenuItem>
+                  {availableColors.length > 0 ? (
+                    availableColors.map((colorOption, index) => (
+                      <MenuItem key={index} value={colorOption}>
+                        {colorOption}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="" disabled>
+                      No colors available
+                    </MenuItem>
+                  )}
                 </Select>
               </FormControl>
 
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Size</InputLabel>
+                <Select value={size} onChange={(e) => setSize(e.target.value)}>
+                  {availableSizes.length > 0 ? (
+                    availableSizes.map((sizeOption, index) => (
+                      <MenuItem key={index} value={sizeOption}>
+                        {sizeOption}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="" disabled>
+                      No sizes available
+                    </MenuItem>
+                  )}
+                </Select>
+              </FormControl>
               <Button
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                onClick={handleNext} // Move to next step
+                onClick={handleNext}
                 fullWidth
               >
                 Next
@@ -185,7 +146,7 @@ const OrderForm = () => {
             </>
           )}
 
-          {/* Step 2: Shipping Details */}
+          {/* Step 2: Shipping details */}
           {step === 2 && (
             <>
               <Typography variant="h6" sx={{ mt: 2 }}>
@@ -198,7 +159,10 @@ const OrderForm = () => {
                 margin="normal"
                 value={shippingDetails.email}
                 onChange={(e) =>
-                  setShippingDetails({ ...shippingDetails, email: e.target.value })
+                  setShippingDetails({
+                    ...shippingDetails,
+                    email: e.target.value,
+                  })
                 }
                 required
               />
@@ -228,11 +192,11 @@ const OrderForm = () => {
                 }
                 required
               />
-<Button
+              <Button
                 variant="contained"
-                color="primary"
+                color="secondary"
                 sx={{ mt: 2 }}
-                onClick={handleBack} // Move to next step
+                onClick={handleBack}
                 fullWidth
               >
                 Back
@@ -241,7 +205,7 @@ const OrderForm = () => {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                onClick={handleOrderSubmit}
+                type="submit"
                 fullWidth
               >
                 Order Now

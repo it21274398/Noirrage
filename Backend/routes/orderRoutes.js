@@ -4,13 +4,15 @@ import {
   getAllOrders,
   getUserOrders,
   markOrderShipped,
+  cancelOrder,
 } from "../controllers/orderController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/", protect, createOrder); // Create an order
-router.get("/", getUserOrders); // Get logged-in user's orders
-router.get("/all", protect, admin, getAllOrders); // Admin: Get all orders
+router.get("/byid", protect, getUserOrders); // Get logged-in user's orders
+router.get("/all", getAllOrders); // Admin: Get all orders
 router.put("/:id/ship", protect, admin, markOrderShipped);// Admin: Mark order as shipped
+router.delete("/:id/deleted", protect, cancelOrder);// Admin: Mark order as shipped
 export default router;

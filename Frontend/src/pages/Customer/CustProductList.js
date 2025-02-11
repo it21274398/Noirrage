@@ -101,7 +101,7 @@ const ProductList = () => {
                   }}
                 >
                   <img
-                    src={`data:image/jpeg;base64,${product.image}`}
+                    src={`http://localhost:5000${product.image}`}
                     alt={product.name}
                     style={{
                       width: "100%",

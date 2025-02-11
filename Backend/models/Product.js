@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
   {
@@ -6,12 +6,13 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    sizes: { type: String, required: true },
-    colors: { type: String, required: true },
-    image: { type: String, required: true }, // Store image as Base64
+    sizes: { type: [String], required: true }, // Array to store multiple sizes
+    colors: { type: [String], required: true }, // Array to store multiple colors
+    image: { type: String }, // Optional image for the product
   },
   { timestamps: true }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema);
+
 export default Product;

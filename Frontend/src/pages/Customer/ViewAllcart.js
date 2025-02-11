@@ -86,12 +86,12 @@ const Cart = () => {
             <Grid item xs={12} md={6} key={item._id}>
               <Card>
                 <CardContent>
+                  {" "}
+                  <Typography variant="h6">{item.product?.name}</Typography>
                   <Box sx={{ textAlign: "center", mb: 2 }}>
                     <img
-                      
                       alt={item.product?.name}
-                      src={`data:image/jpeg;base64,${item.product?.image}`}
-              
+                      src={`http://localhost:5000${item.product?.image}`}
                       style={{
                         width: "50%",
                         maxHeight: "150px",
@@ -100,19 +100,36 @@ const Cart = () => {
                       }}
                     />
                   </Box>
-                  <Typography variant="h6">
-                    {item.product?.name}
-                  </Typography>
-                  <Typography>Quantity: {item.qty || 1}</Typography>
-                  <Typography>Size: {item.size || "N/A"}</Typography>
-                  <Typography>Color: {item.color || "N/A"}</Typography>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleRemoveFromCart(item._id)}
+                  <Card
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      p: 2,
+                    }}
                   >
-                    Remove
-                  </Button>
+                    <Typography>
+                      Quantity:
+                      <br />
+                      {item.qty || 1}
+                    </Typography>
+                    <Typography>
+                      Size:
+                      <br /> {item.size || "N/A"}
+                    </Typography>
+                    <Typography>
+                      Color: <br />
+                      {item.color || "N/A"}
+                    </Typography>
+
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleRemoveFromCart(item._id)}
+                    >
+                      Remove
+                    </Button>
+                  </Card>
                 </CardContent>
               </Card>
             </Grid>

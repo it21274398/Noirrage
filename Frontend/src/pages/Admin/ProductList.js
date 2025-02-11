@@ -57,14 +57,31 @@ const ProductList = () => {
           products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
               <Card sx={{ width: 300, height: 500, display: "flex", flexDirection: "column", padding: "10px" }}>
-                <Box sx={{ height: 350, width: "100%", overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Box
+                  sx={{
+                    height: 350,
+                    width: "100%",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <img
-                    src={`data:image/jpeg;base64,${product.image}`}
+                    src={`http://localhost:5000${product.image}`} // ✅ Corrected URL for images
                     alt={product.name}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 </Box>
-                <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: 150, padding: "10px" }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: 150,
+                    padding: "10px",
+                  }}
+                >
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Price: ${product.price}

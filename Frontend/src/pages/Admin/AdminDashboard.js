@@ -41,7 +41,10 @@ const AdminDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/orders", {});
+      const { data } = await axios.get(
+        "http://localhost:5000/api/orders/all",
+        {}
+      );
       setOrders(data);
     } catch (error) {
       console.error(
@@ -89,8 +92,10 @@ const AdminDashboard = () => {
           <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
             <TableRow>
               <TableCell>Customer Email</TableCell>
+              <TableCell>Product</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Address</TableCell>
+              <TableCell>Contact No</TableCell>
               <TableCell>Color</TableCell>
               <TableCell>Size</TableCell>
               <TableCell>Total Price</TableCell>
@@ -103,10 +108,23 @@ const AdminDashboard = () => {
               .map((order) => (
                 <TableRow key={order._id}>
                   <TableCell>{order.shippingDetails.email}</TableCell>
-                  <TableCell>{order.products[0]?.quantity || "N/A"}</TableCell>
+                  {order.products?.map((item) => (
+                    <Box>
+                      <img
+                        alt={item.product?.name}
+                        src={`http://localhost:5000${item.product?.image}`}
+                        style={{
+                          maxHeight: "100px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </Box>
+                  ))}
+                  <TableCell>{order.products[0]?.quantity }</TableCell>
                   <TableCell>{order.shippingDetails.address}</TableCell>
-                  <TableCell>{order.products[0]?.size || "N/A"}</TableCell>
-                  <TableCell>{order.products[0]?.color || "N/A"}</TableCell>
+                  <TableCell>{order.shippingDetails.contactNumber}</TableCell>
+                  <TableCell>{order.products[0]?.size}</TableCell>
+                  <TableCell>{order.products[0]?.color}</TableCell>
                   <TableCell>${order.totalPrice}</TableCell>
                   <TableCell>
                     <Button
@@ -153,6 +171,7 @@ const AdminDashboard = () => {
           <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
             <TableRow>
               <TableCell>Customer Email</TableCell>
+              <TableCell>Product</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Address</TableCell>
               <TableCell>Color</TableCell>
@@ -165,6 +184,18 @@ const AdminDashboard = () => {
               filteredOrders.map((order) => (
                 <TableRow key={order._id}>
                   <TableCell>{order.shippingDetails.email}</TableCell>
+                  {order.products?.map((item) => (
+                    <Box>
+                      <img
+                        alt={item.product?.name}
+                        src={`http://localhost:5000${item.product?.image}`}
+                        style={{
+                          maxHeight: "100px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </Box>
+                  ))}
                   <TableCell>{order.products[0]?.quantity || "N/A"}</TableCell>
                   <TableCell>{order.shippingDetails.address}</TableCell>
                   <TableCell>{order.products[0]?.size || "N/A"}</TableCell>

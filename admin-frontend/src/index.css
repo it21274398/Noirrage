@@ -1,15 +1,13 @@
 body {
-  background-image: linear-gradient(90deg,#0f0c29,#2a2657, #24243e);
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #E0E0E0; /* Light text for dark background */
 }
 
 code {
-  font-family:  Lobster
-    
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }

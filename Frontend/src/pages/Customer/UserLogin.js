@@ -8,11 +8,14 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { FcAdvertising, FcLock, FcUnlock } from "react-icons/fc";
+import { IoEye } from "react-icons/io5";
+import { IoMdEyeOff } from "react-icons/io";
+import { MdOutlineMail } from "react-icons/md";
 import axios from "axios";
 import { toast } from "react-toastify"; // Import Toast
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import logo from "../../images/logo.png";
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -55,54 +58,100 @@ const UserLogin = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
-          Login
+      <Box
+  sx={{
+    mt: 5,
+    p: 4,
+    boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)", // Slightly deeper shadow on hover
+    borderRadius: 3,
+    background: "linear-gradient(90deg, #232526, #414345)", // Smooth gradient
+    textAlign: "center",
+
+   
+  }}
+>
+
+        {/* 🔥 Logo Image */}
+        <img src={logo} alt="Brand Logo" style={{ width: 150, marginBottom: 15 }} />
+<Typography
+          variant="h5"
+          sx={{ fontFamily: "'Raleway', sans-serif", fontSize: "2em" }}
+          color="#fdc200"
+          gutterBottom
+        >
+         Welcome Back
         </Typography>
+    
+
         <form onSubmit={handleSubmit}>
           <TextField
+            fullWidth
             label="Email"
             name="email"
             type="email"
-            fullWidth
             margin="normal"
             required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <FcAdvertising style={{ fontSize: "25px" }} />
+                  <MdOutlineMail color="gray" size={25} />
                 </InputAdornment>
               ),
+            }} sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
             }}
             onChange={handleChange}
           />
+
           <TextField
+            fullWidth
             label="Password"
             name="password"
-            type={showPassword ? "text" : "password"} // Fix for password visibility toggle
-            fullWidth
+            type={showPassword ? "text" : "password"}
             margin="normal"
             required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={handleTogglePassword} edge="end">
-                    {showPassword ? <FcUnlock /> : <FcLock />}
+                    {showPassword ? <IoMdEyeOff color="gray" size={25} /> : <IoEye size={25} color="gray" />}
                   </IconButton>
                 </InputAdornment>
               ),
+            }} sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
             }}
             onChange={handleChange}
           />
-          <Link to="/user/signup" className="nav-link">
-            Sing up
-          </Link>
+
+          <Typography color="gray" sx={{ mt: 1 }}>
+            Don't have an account?{" "}
+            <Link to="/user/signup" style={{ color: "#003cff", textDecoration: "none", fontWeight: "bold" }}>
+              Sign Up
+            </Link>
+          </Typography>
+
           <Button
-            variant="contained"
-            color="primary"
             type="submit"
             fullWidth
-            sx={{ mt: 2 }}
+            variant="contained"
+            sx={{
+              mt: 3,
+              bgcolor: "black",
+              color: "white",
+              fontWeight: "bold",
+              "&:hover": { bgcolor: "gray" },
+            }}
           >
             Login
           </Button>

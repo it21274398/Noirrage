@@ -61,7 +61,7 @@ const AddProduct = () => {
     //if token not found redirect to admin login
     if (!admintoken) {
       console.error("No admin token found");
-      navigate("/admin/login"); // Redirect if no token
+      navigate("/"); // Redirect if no token
       return;
     }
     e.preventDefault();

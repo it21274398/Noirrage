@@ -11,6 +11,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   color: 'white',
   textAlign: 'center',
+  fontFamily: "'Raleway', sans-serif",
 }));
 
 const Home = () => {

@@ -47,7 +47,7 @@ const Signup = () => {
       );
       console.log(data);
       toast.success("Signup successful! ");
-      setTimeout(() => navigate("/admin/login"), 700);
+      setTimeout(() => navigate("/"), 700);
     } catch (error) {
       toast.error(error.response?.data?.message || "Signup failed! Try again."); // Show error message
     }

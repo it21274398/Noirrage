@@ -21,6 +21,7 @@ const OrderForm = () => {
   const [step, setStep] = useState(1); // Track current step
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [order, setOrder] = useState({ products: [] });
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
   const [shippingDetails, setShippingDetails] = useState({
@@ -78,141 +79,203 @@ const OrderForm = () => {
     }
   };
 
+  const cancel = () => {
+    navigate("/CustProductList"); // Redirect to Home page
+  };
+
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
-          Place an Order
-        </Typography>
-        <form onSubmit={handleOrderSubmit}>
-          {/* Step 1: Product selection */}
-          {step === 1 && selectedProduct && (
-            <>
-              <Typography variant="h6">{selectedProduct.name}</Typography>
-              <TextField
-                label="Quantity"
-                type="number"
-                fullWidth
-                margin="normal"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                required
-              />
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel>Color</InputLabel>
-                <Select
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                >
-                  {availableColors.length > 0 ? (
-                    availableColors.map((colorOption, index) => (
-                      <MenuItem key={index} value={colorOption}>
-                        {colorOption}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="" disabled>
-                      No colors available
-                    </MenuItem>
-                  )}
-                </Select>
-              </FormControl>
+    <Container maxWidth="xl">
+      <Box
+        sx={{
+          mt: 5,
+          p: 3,
+          boxShadow: 3,
+          borderRadius: 2,
+backgroundColor:"white"
+        }}
+      >
+        {/* Flexbox for Left Image & Right Form */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {/* Left Side - Product Image (40%) */}
+          <Box sx={{ width: "40%", textAlign: "center" }}>
+            <Typography variant="h5" gutterBottom>
+              Place an Order
+            </Typography>
 
-              <FormControl fullWidth margin="normal" required>
-                <InputLabel>Size</InputLabel>
-                <Select value={size} onChange={(e) => setSize(e.target.value)}>
-                  {availableSizes.length > 0 ? (
-                    availableSizes.map((sizeOption, index) => (
-                      <MenuItem key={index} value={sizeOption}>
-                        {sizeOption}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="" disabled>
-                      No sizes available
-                    </MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={handleNext}
-                fullWidth
-              >
-                Next
-              </Button>
-            </>
-          )}
+            <img
+              alt={selectedProduct?.name}
+              src={`http://localhost:5000${selectedProduct?.image}`}
+              style={{
+                width: "100%",
+                maxHeight: "300px",
+                objectFit: "contain",
+                borderRadius: "10px",
+              }}
+            />
 
-          {/* Step 2: Shipping details */}
-          {step === 2 && (
-            <>
-              <Typography variant="h6" sx={{ mt: 2 }}>
-                Shipping Details
-              </Typography>
-              <TextField
-                label="Email"
-                type="email"
-                fullWidth
-                margin="normal"
-                value={shippingDetails.email}
-                onChange={(e) =>
-                  setShippingDetails({
-                    ...shippingDetails,
-                    email: e.target.value,
-                  })
-                }
-                required
-              />
-              <TextField
-                label="Address"
-                fullWidth
-                margin="normal"
-                value={shippingDetails.address}
-                onChange={(e) =>
-                  setShippingDetails({
-                    ...shippingDetails,
-                    address: e.target.value,
-                  })
-                }
-                required
-              />
-              <TextField
-                label="Contact Number"
-                fullWidth
-                margin="normal"
-                value={shippingDetails.contactNumber}
-                onChange={(e) =>
-                  setShippingDetails({
-                    ...shippingDetails,
-                    contactNumber: e.target.value,
-                  })
-                }
-                required
-              />
-              <Button
-                variant="contained"
-                color="secondary"
-                sx={{ mt: 2 }}
-                onClick={handleBack}
-                fullWidth
-              >
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                type="submit"
-                fullWidth
-              >
-                Order Now
-              </Button>
-            </>
-          )}
-        </form>
+            <Button
+              onClick={cancel}
+              sx={{
+                backgroundColor: "black",
+                color: "white",
+                mt: 2,
+                fontWeight: "bold",
+                transition: "0.3s ease-in-out",
+                
+                "&:hover": { backgroundColor: "#C9A227", color: "black" },
+              }}
+            >
+              Cancel
+            </Button>
+          </Box>
+
+          {/* Right Side - Order Form (60%) */}
+          <Box
+            sx={{
+              width: "60%",
+              p: 3,
+             
+              borderRadius: 2,
+            }}
+          >
+            <form onSubmit={handleOrderSubmit}>
+              {/* Step 1: Product selection */}
+              {step === 1 && selectedProduct && (
+                <>
+                  <Typography variant="h5" gutterBottom>
+                    Order Details
+                  </Typography>
+                  <Typography variant="h6">{selectedProduct.name}</Typography>
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    fullWidth
+                    margin="normal"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    required
+                  />
+                  <FormControl fullWidth margin="normal" required>
+                    <InputLabel>Color</InputLabel>
+                    <Select
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                    >
+                      {availableColors.length > 0 ? (
+                        availableColors.map((colorOption, index) => (
+                          <MenuItem key={index} value={colorOption}>
+                            {colorOption}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No colors available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl fullWidth margin="normal" required>
+                    <InputLabel>Size</InputLabel>
+                    <Select
+                      value={size}
+                      onChange={(e) => setSize(e.target.value)}
+                    >
+                      {availableSizes.length > 0 ? (
+                        availableSizes.map((sizeOption, index) => (
+                          <MenuItem key={index} value={sizeOption}>
+                            {sizeOption}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No sizes available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    onClick={handleNext}
+                    fullWidth
+                  >
+                    Next
+                  </Button>
+                </>
+              )}
+
+              {/* Step 2: Shipping details */}
+              {step === 2 && (
+                <>
+                  <Typography variant="h5" gutterBottom>
+                    Shipping Details
+                  </Typography>
+
+                  <TextField
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    margin="normal"
+                    value={shippingDetails.email}
+                    onChange={(e) =>
+                      setShippingDetails({
+                        ...shippingDetails,
+                        email: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <TextField
+                    label="Address"
+                    fullWidth
+                    margin="normal"
+                    value={shippingDetails.address}
+                    onChange={(e) =>
+                      setShippingDetails({
+                        ...shippingDetails,
+                        address: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <TextField
+                    label="Contact Number"
+                    fullWidth
+                    margin="normal"
+                    value={shippingDetails.contactNumber}
+                    onChange={(e) =>
+                      setShippingDetails({
+                        ...shippingDetails,
+                        contactNumber: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ mt: 2 }}
+                    onClick={handleBack}
+                    fullWidth
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    type="submit"
+                    fullWidth
+                  >
+                    Order Now
+                  </Button>
+                </>
+              )}
+            </form>
+          </Box>
+        </Box>
       </Box>
     </Container>
   );

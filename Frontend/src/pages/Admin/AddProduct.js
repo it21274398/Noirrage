@@ -203,7 +203,7 @@ const AddProduct = () => {
             />
           </Grid>
           {productData.imagePreview && (
-            <Grid item xs={12}>
+            <Grid item sx={{marginLeft:"25%"}} xs={6}>
               <img
                 src={productData.imagePreview}
                 alt="Preview"

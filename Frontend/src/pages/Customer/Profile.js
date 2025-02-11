@@ -99,6 +99,33 @@ const Profile = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId, orderStatus, event) => {
+    event.preventDefault(); // Prevent default behavior
+  
+    // Prevent cancellation if order is already shipped
+    if (orderStatus === "Shipped") {
+      toast.error("Order has already been shipped and cannot be canceled.");
+      return;
+    }
+  
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      return;
+    }
+  
+    try {
+      const { data } = await axios.delete(
+        `http://localhost:5000/api/orders/${orderId}/deleted`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Order deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      toast.error(error.response?.data?.message || "Failed to delete order.");
+    }
+  };
+  
+
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 3 }}>
@@ -110,16 +137,31 @@ const Profile = () => {
           <LinearProgress color="primary" />
         </Box>
       ) : user ? (
-        <Card sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2,mb:5, bgcolor: "#f5f5f5", borderRadius: 2, boxShadow: 3 }}>
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography variant="h6">Name: {user.name}</Typography>
-          <Typography variant="h6">Email: {user.email}</Typography>
-        </CardContent>
-        <Button variant="contained" color="primary" onClick={handleOpen} sx={{ height: "40px", minWidth: "120px" }}>
-          Edit Profile
-        </Button>
-      </Card>
-      
+        <Card
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: 2,
+            mb: 5,
+            bgcolor: "#f5f5f5",
+            borderRadius: 2,
+            boxShadow: 3,
+          }}
+        >
+          <CardContent sx={{ flexGrow: 1 }}>
+            <Typography variant="h6">Name: {user.name}</Typography>
+            <Typography variant="h6">Email: {user.email}</Typography>
+          </CardContent>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            sx={{ height: "40px", minWidth: "120px" }}
+          >
+            Edit Profile
+          </Button>
+        </Card>
       ) : (
         <Typography>No profile data found.</Typography>
       )}
@@ -127,8 +169,34 @@ const Profile = () => {
         orders.map((order) => (
           <Card key={order._id} sx={{ mb: 2, p: 2 }}>
             <CardContent>
-              <Typography variant="h6">Order ID: {order._id}</Typography>
-              <Typography variant="body1">Status: {order.status}</Typography>
+              {order.products?.map((item) => (
+                <Box>
+                  <img
+                    alt={item.product?.name}
+                    src={`http://localhost:5000${item.product?.image}`}
+                    style={{
+                      width: "50%",
+                      maxHeight: "150px",
+                      objectFit: "contain",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </Box>
+              ))}
+              <Typography variant="body1" display="flex" alignItems="center">
+                Status: {order.status}
+                <Box
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    backgroundColor:
+                      order.status === "Shipped" ? "#4CAF50" : "#F44336",
+                    ml: 1, // Adds spacing between text and dot
+                  }}
+                />
+              </Typography>
+
               <Typography variant="body1">
                 Total: ${order.totalPrice}
               </Typography>
@@ -145,6 +213,15 @@ const Profile = () => {
                 </Card>
               ))}
             </CardContent>
+            <Button
+  variant="contained"
+  color="primary"
+  onClick={(event) => handleCancelOrder(order._id, order.status, event)}
+  fullWidth
+>
+  Cancel Order
+</Button>
+
           </Card>
         ))
       ) : (

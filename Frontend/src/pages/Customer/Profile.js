@@ -101,30 +101,30 @@ const Profile = () => {
 
   const handleCancelOrder = async (orderId, orderStatus, event) => {
     event.preventDefault(); // Prevent default behavior
-  
+
     // Prevent cancellation if order is already shipped
     if (orderStatus === "Shipped") {
       toast.error("Order has already been shipped and cannot be canceled.");
       return;
     }
-  
+
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       return;
     }
-  
+
     try {
       const { data } = await axios.delete(
         `http://localhost:5000/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order deleted successfully!");
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting order:", error);
       toast.error(error.response?.data?.message || "Failed to delete order.");
     }
   };
-  
 
   return (
     <Container>
@@ -214,14 +214,15 @@ const Profile = () => {
               ))}
             </CardContent>
             <Button
-  variant="contained"
-  color="primary"
-  onClick={(event) => handleCancelOrder(order._id, order.status, event)}
-  fullWidth
->
-  Cancel Order
-</Button>
-
+              variant="contained"
+              color="primary"
+              onClick={(event) =>
+                handleCancelOrder(order._id, order.status, event)
+              }
+              fullWidth
+            >
+              Cancel Order
+            </Button>
           </Card>
         ))
       ) : (

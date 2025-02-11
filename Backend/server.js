@@ -10,6 +10,7 @@ import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 // Initialize dotenv and express
 dotenv.config();
@@ -28,7 +29,13 @@ if (!fs.existsSync(uploadPath)) {
 // ✅ Middleware (Proper Order)
 app.use(express.json({ limit: "50mb" })); // Handles JSON payloads (Large payloads)
 app.use(express.urlencoded({ extended: true })); // Handles form-urlencoded requests
-app.use(cors({ origin: "http://localhost:3000", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Content-Type, Authorization" }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 // ✅ Connect to MongoDB
 connectDB();
@@ -38,6 +45,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // ✅ Serve Uploaded Images as Static Files
 app.use("/uploads", express.static(uploadPath));

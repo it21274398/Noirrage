@@ -148,7 +148,7 @@ const ProductList = () => {
                   >
                     {product.name}
                   </Typography>
-                  <Typography variant="h7" color="white">
+                  <Typography variant="h7" color="#d0d0d0">
                   {product.description}
                   </Typography>
                   <Typography
@@ -161,7 +161,7 @@ const ProductList = () => {
   
                   <Grid container spacing={1} sx={{ mt: 1, justifyContent: "center" }}>
                     {/* Order Now Button */}
-                    <Grid item xs={9}>
+                    <Grid item xs={8}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -179,18 +179,20 @@ const ProductList = () => {
                     </Grid>
   
                     {/* Add to Cart Button */}
-                    <Grid item xs={1}>
+                    <Grid item xs={2}>
                       <Button
                         sx={{
+                          
                           borderRadius: 10,
                           bgcolor: "#00000000",
                           color: "gold",
                           fontWeight: "bold",
-                          "&:hover": { bgcolor: "#00000000" },
+                          "&:hover": { color: "#1ac600" },
                         }}
                         onClick={() => handleAddToCart(product._id)} // Pass product ID
-                        startIcon={<ShoppingCartIcon />}
-                      />
+                        
+                       
+                      > <ShoppingCartIcon /></Button>
                     </Grid>
                   </Grid>
                 </CardContent>

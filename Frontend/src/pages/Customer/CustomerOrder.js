@@ -94,11 +94,11 @@ const OrderForm = () => {
   }}
 >
  
-<Container maxWidth="xl">
+<Container  maxWidth="xl">
       
       <Box
         sx={{
-          mt: 5, // Moves below navbar (adjust if needed)
+          
           p: 3,
           position: "relative", // Ensures the button positions inside this box
           boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
@@ -216,6 +216,7 @@ const OrderForm = () => {
                           inputProps={{
                             min: 1,
                             style: {
+                              fontWeight: "bold",
                               color: "white",
                               border: "1px solid #ccc",
                               textAlign: "center",
@@ -273,8 +274,11 @@ const OrderForm = () => {
                                   backgroundColor: color.toLowerCase(),
                                   color: "white",
                                   border: "1px solid black",
+                                  fontWeight: "bold",
                                   "&.Mui-selected": {
                                     border: "1px solid black",
+                                    backgroundColor: "white",
+                                    color: "black"
                                   },
                                   "&:hover": { opacity: 0.8 },
                                 }}
@@ -312,12 +316,14 @@ const OrderForm = () => {
                               <ToggleButton
                                 key={index}
                                 value={sizeOption}
-                                sx={{color:"white",
+                                sx={{color:"black",
+                                  backgroundColor: "#c6c6c6",
                                   border: "1px solid #ccc",
                                   fontWeight: "bold",
                                   "&.Mui-selected": {
                                     border: "1px solid black",
-                                    backgroundColor: "#f0f0f0",
+                                    backgroundColor: "black",
+                                    color: "white",
                                   },
                                   "&:hover": { backgroundColor: "#e0e0e0" },
                                 }}
@@ -410,12 +416,12 @@ const OrderForm = () => {
                       right:"0",
                       bottom:"0",
                       mr:6,
-                      mb:1,
+                      mb:4,
                       bgcolor:"black",
                       // background: "linear-gradient(180deg ,rgba(0, 0, 0, 0.78) , #434343,rgba(0, 0, 0, 0.81))" ,
                       color: "white",
                       fontWeight: "bold",
-                      "&:hover": { color:"black", bgcolor: "white", boxShadow: "0px 0px 10px rgba(159, 159, 159, 0.88)", },
+                      "&:hover": { color:"black", bgcolor: "gold", boxShadow: "0px 0px 10px rgba(159, 159, 159, 0.88)", },
                      
                     }}
                     onClick={handleNext}
@@ -451,7 +457,7 @@ const OrderForm = () => {
               )}
             </form>
           </Box>
-        </Box>
+        </Box> <br/> <br/>
       </Box>
     </Container>
 </Box>

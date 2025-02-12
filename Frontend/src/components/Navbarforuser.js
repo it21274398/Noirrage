@@ -3,8 +3,9 @@ import { Box, Typography, IconButton, Drawer, List, ListItem, ListItemText } fro
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import logo from "../images/logo.png";
 
-const Navbar = ({ showNavBar, handleLogout, logo }) => {
+const Navbar = ({ showNavBar, handleLogout }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -37,7 +38,7 @@ const Navbar = ({ showNavBar, handleLogout, logo }) => {
       {/* Logo */}
       <a href="/home">
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} alt="Logo" style={{ height: "60px", marginLeft: "20px" }} />
+          <img src={logo} alt="Logo" style={{ height: "75px", marginLeft: "20px" }} />
         </Box>
       </a>
 
@@ -96,7 +97,7 @@ const Navbar = ({ showNavBar, handleLogout, logo }) => {
 </Box>
 
           <Typography
-            onClick={() => handleLogout("user")}
+            to="/"
             sx={{
               fontSize: "1.2rem",
               fontWeight: "500",

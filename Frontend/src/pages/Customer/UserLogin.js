@@ -49,7 +49,7 @@ const UserLogin = () => {
 
       axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
-      toast.success(data.email, "Logged In Successfully");
+      toast.success("LogIn Successfully..");
       navigate("/Home"); // Redirect to orders page
     } catch (error) {
       toast.error(error.response?.data?.message || "Login Failed");

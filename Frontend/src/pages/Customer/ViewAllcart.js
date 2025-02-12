@@ -76,7 +76,7 @@ const Cart = () => {
   };
 
   return (
-    <Box sx={{ padding: "40px", minHeight: "100vh", background: "#1a1a1a" }}>
+    <Box sx={{ padding: "40px", minHeight: "100vh" }}>
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress
@@ -104,12 +104,14 @@ const Cart = () => {
             <Grid item xs={12} sm={10} md={6} key={item._id}>
               <Card
                 sx={{
-                  backdropFilter: "blur(15px)",
+                  
+                 
                   boxShadow: "0px 12px 20px rgb(0, 0, 0)",
                   borderRadius: 2,
                   background: "linear-gradient(90deg, #232526, #414345)",
                   transition: "all 0.3s ease",
                   "&:hover": {
+                    border:"1px solid rgba(171, 170, 170, 0.55)",
                     transform: "scale(1.02)",
                     boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.9)",
                   },
@@ -143,14 +145,14 @@ const Cart = () => {
                   </Box>
 
                   {/* Product Details */}
-                  <Box sx={{ flex: 1 }}>
+                  <Box ml={3} sx={{ flex: 1 }}>
                     <Typography
                       variant="h5"
+                      mb={2}
                       sx={{
+                        fontFamily: "'Raleway', sans-serif",
                         fontWeight: "bold",
                         color: "#f1c40f",
-                        textAlign: "center",
-                        mb: 1,
                       }}
                     >
                       {item.product?.name}
@@ -161,25 +163,24 @@ const Cart = () => {
                         color: "white",
                         textAlign: "center",
                         opacity: 0.8,
-                        mb: 1,
                       }}
                     >
                       {item.product?.description}
                     </Typography>
                     <Typography
+                      mt={2}
                       variant="h6"
                       sx={{
                         fontWeight: "700",
                         color: "white",
-                        textAlign: "center",
                       }}
                     >
-                      Price: ${item.product?.price}
+                      Price: Rs {item.product?.price}
                     </Typography>
                   </Box>
                 </CardContent>
                 {/*order Buttons */}
-                <Box sx={{ ml:30,mt: -4,mb:5, textAlign: "center" }}>
+                <Box sx={{ ml: 30, mt: -4, mb: 5, textAlign: "center" }}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -193,19 +194,20 @@ const Cart = () => {
                   >
                     Order Now
                   </Button>
-
-                  {/*remove Buttons */}
                   <Button
+                 
+                    variant="contained"
+                    color="primary"
                     sx={{
-                      borderRadius: 10,
-                      bgcolor: "#00000000",
-                      color: "gold",
+                      marginLeft:3,
+                      bgcolor: "gold",
+                      color: "black",
                       fontWeight: "bold",
-                      "&:hover": { bgcolor: "#00000000" },
+                      "&:hover": { bgcolor: "red" },
                     }}
                     onClick={() => handleRemoveFromCart(item._id)}
                   >
-                    <DeleteIcon />
+                    Remove <DeleteIcon />
                   </Button>
                 </Box>
               </Card>

@@ -98,7 +98,7 @@ const ProductList = () => {
               <Card
                 sx={{
                   width: "75%",
-                  height: 510,
+                 
                   display: "flex",
                   flexDirection: "column",
                   padding: "20px",
@@ -107,10 +107,7 @@ const ProductList = () => {
                   background: "linear-gradient(45deg, #232526, #414345)",
                   boxShadow: "0 4px 10px rgba(58, 58, 58, 0.76)",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  // "&:hover": {
-                  //   transform: "scale(1.03)",
-                  //   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.89)",
-                  // },
+                  
                 }}
               >
                 <Box
@@ -140,7 +137,7 @@ const ProductList = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    height: 150,
+                   
                     padding: "10px",
                     textAlign: "center",
                   }}
@@ -151,15 +148,15 @@ const ProductList = () => {
                   >
                     {product.name}
                   </Typography>
-                  <Typography variant="h5" color="white">
-                    Price: ${product.price}
+                  <Typography variant="h7" color="white">
+                  {product.description}
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant="h6"
                     color="text.secondary"
                     sx={{ mt: 1, color: "#fff" }}
-                  >
-                    {product.description}
+                  > Price: ${product.price}
+                    
                   </Typography>
   
                   <Grid container spacing={1} sx={{ mt: 1, justifyContent: "center" }}>

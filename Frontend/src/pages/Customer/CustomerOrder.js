@@ -277,7 +277,7 @@ const OrderForm = () => {
                                   fontWeight: "bold",
                                   "&.Mui-selected": {
                                     border: "1px solid black",
-                                    backgroundColor: "white",
+                                    
                                     color: "black"
                                   },
                                   "&:hover": { opacity: 0.8 },

@@ -184,7 +184,7 @@ const OrderForm = () => {
                     <Box
                       sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                     >
-                      <Typography variant="subtitle1" fontWeight="bold">
+                      <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
                         Quantity
                       </Typography>
                       <Box
@@ -219,7 +219,7 @@ const OrderForm = () => {
                               color: "white",
                               border: "1px solid #ccc",
                               textAlign: "center",
-                             
+                             padding: "10px",
                               MozAppearance: "textfield", // Firefox
                             },
                           }}
@@ -253,7 +253,7 @@ const OrderForm = () => {
                           gap: 1,
                         }}
                       >
-                        <Typography variant="subtitle1" fontWeight="bold">
+                        <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
                           Pick a Color
                         </Typography>
                         <ToggleButtonGroup
@@ -269,16 +269,16 @@ const OrderForm = () => {
                                 key={index}
                                 value={color}
                                 sx={{
-                                  padding: 3,
+                                  fontSize:12,
                                   backgroundColor: color.toLowerCase(),
-                                  color: "gray",
+                                  color: "white",
                                   border: "1px solid black",
                                   "&.Mui-selected": {
-                                    border: "2px solid black",
+                                    border: "1px solid black",
                                   },
                                   "&:hover": { opacity: 0.8 },
                                 }}
-                              ></ToggleButton>
+                              >{color}</ToggleButton>
                             ))
                           ) : (
                             <ToggleButton value="" disabled>
@@ -297,7 +297,7 @@ const OrderForm = () => {
                           gap: 1,
                         }}
                       >
-                        <Typography variant="subtitle1" fontWeight="bold">
+                        <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
                           Available Sizes
                         </Typography>
                         <ToggleButtonGroup
@@ -335,7 +335,7 @@ const OrderForm = () => {
                     </Box>
                   </Box>
                   {/*------------------------------------------------------------ Shipping details------------------------------------------------------------*/}
-                  <Typography mt={3} variant="h5" gutterBottom>
+                  <Typography color="#d7d7d7" mt={3} variant="h5" gutterBottom>
                     Shipping Details
                   </Typography>
                   <TextField
@@ -351,7 +351,7 @@ const OrderForm = () => {
                       })
                     }
                     sx={{
-                      "& label": { color: "gray" }, // Default label color
+                      "& label": { color: "white" }, // Default label color
                       "& label.Mui-focused": { color: "white" }, // Focused label color
                       "& input": { color: "white" }, // User-typed text color
                       "& .MuiOutlinedInput-root": {
@@ -372,7 +372,7 @@ const OrderForm = () => {
                       })
                     }
                     sx={{
-                      "& label": { color: "gray" }, // Default label color
+                      "& label": { color: "white" }, // Default label color
                       "& label.Mui-focused": { color: "white" }, // Focused label color
                       "& input": { color: "white" }, // User-typed text color
                       "& .MuiOutlinedInput-root": {
@@ -393,7 +393,7 @@ const OrderForm = () => {
                       })
                     }
                     sx={{
-                      "& label": { color: "gray" }, // Default label color
+                      "& label": { color: "white" }, // Default label color
                       "& label.Mui-focused": { color: "white" }, // Focused label color
                       "& input": { color: "white" }, // User-typed text color
                       "& .MuiOutlinedInput-root": {

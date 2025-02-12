@@ -133,10 +133,22 @@ const Profile = () => {
       </Typography>
 
       {loading ? (
-        <Box sx={{ width: "100%", mb: 2 }}>
-          <LinearProgress sx={{backgroundColor:"#fcd600"}} />
-        </Box>
-      ) : user ? (
+  <Box sx={{ width: "100%", mb: 2 }}>
+    <LinearProgress
+      sx={{
+        backgroundColor: "black",
+        borderRadius: 10,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        "& .MuiLinearProgress-bar": {
+          backgroundColor: "gold", 
+          borderRadius: 4,
+        },
+    
+      }}
+    />
+  </Box>
+) 
+ : user ? (
         <Card
           sx={{
             display: "flex",

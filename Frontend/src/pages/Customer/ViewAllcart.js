@@ -76,16 +76,36 @@ const Cart = () => {
 
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
-          <LinearProgress color="primary" />
+          <LinearProgress
+            sx={{
+              backgroundColor: "black",
+              borderRadius: 10,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: "gold", 
+                borderRadius: 4,
+              },
+          
+            }}
+          />
         </Box>
       ) : cartItems.length === 0 ? (
         <Typography>No products available</Typography>
       ) : (
         <Grid container spacing={3}>
           {cartItems.map((item) => (
-            <Grid item xs={12} md={6} key={item._id}>
+            <Grid  item xs={12} md={6} key={item._id}>
               <Card>
-                <CardContent>
+                <CardContent sx={{
+                 
+                  background: "linear-gradient(45deg, #232526, #414345)",
+                  boxShadow: "0 4px 10px rgba(58, 58, 58, 0.76)",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  // "&:hover": {
+                  //   transform: "scale(1.03)",
+                  //   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.89)",
+                  // },
+                }}>
                   {" "}
                   <Typography variant="h6">{item.product?.name}</Typography>
                   <Box sx={{ textAlign: "center", mb: 2 }}>

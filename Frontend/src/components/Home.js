@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container,  Typography,  Card, CardMedia, CardContent, Box } from '@mui/material';
+import { Container, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import CustProductList from '../../src/pages/Customer/CustProductList'
 
@@ -20,17 +20,20 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection>
         <Typography variant="h1" component="h1" gutterBottom>
-        Noirrage
+          Noirrage
         </Typography>
-       
       </HeroSection>
 
       {/* Featured Products Section */}
-      <Container>
-        <CustProductList/>
+      <Container
+        maxWidth={false} // Removes the default container width constraints
+        sx={{
+          paddingLeft: 0, // Remove left padding
+          paddingRight: 0, // Remove right padding
+        }}
+      >
+        <CustProductList />
       </Container>
-
-    
     </div>
   );
 };

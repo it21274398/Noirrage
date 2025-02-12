@@ -53,10 +53,18 @@ const Signup = () => {
   };
 
   return (
+    <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
+            height: "100vh", // Full viewport height
+          }}
+        >
     <Container maxWidth="sm">
       <Box
        sx={{
-        mt: 5,
+        
         p: 4,
         boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)", // Slightly deeper shadow on hover
         borderRadius: 3,
@@ -193,7 +201,7 @@ const Signup = () => {
           </Button>
         </form>
       </Box>
-    </Container>
+    </Container></Box>
   );
 };
 

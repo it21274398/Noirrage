@@ -11,6 +11,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -62,32 +64,53 @@ const ProductList = () => {
     }
   };
 
+  
   return (
     <Box sx={{ padding: "20px" }}>
-      <Typography variant="h5" gutterBottom>
-        Product List
-      </Typography>
-
       {loading && (
         <Box sx={{ width: "100%", mb: 2 }}>
-          <LinearProgress color="primary" />
+          <LinearProgress
+            sx={{
+              backgroundColor: "black",
+              borderRadius: 10,
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: "gold",
+                borderRadius: 4,
+              },
+            }}
+          />
         </Box>
       )}
-
-      <Grid container spacing={3}>
+  
+      <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {!loading && products.length === 0 ? (
-          <Typography></Typography>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ width: "100%", textAlign: "center" }}
+          >
+            No products available.
+          </Typography>
         ) : (
           products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product._id}>
+            <Grid item xs={12} sm={6} md={3} key={product._id}>
               <Card
                 sx={{
-                  width: 300,
+                  width: "75%",
                   height: 510,
                   display: "flex",
                   flexDirection: "column",
-                  padding: "10px",
-                  margin: "60px",
+                  padding: "20px",
+                  margin: "10px", // Reduced margin here
+                  borderRadius: 2,
+                  background: "linear-gradient(45deg, #232526, #414345)",
+                  boxShadow: "0 4px 10px rgba(58, 58, 58, 0.76)",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  // "&:hover": {
+                  //   transform: "scale(1.03)",
+                  //   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.89)",
+                  // },
                 }}
               >
                 <Box
@@ -98,6 +121,7 @@ const ProductList = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    borderRadius: 1,
                   }}
                 >
                   <img
@@ -107,6 +131,7 @@ const ProductList = () => {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
+                 
                     }}
                   />
                 </Box>
@@ -117,39 +142,59 @@ const ProductList = () => {
                     justifyContent: "space-between",
                     height: 150,
                     padding: "10px",
+                    textAlign: "center",
                   }}
                 >
-                  <Typography variant="h6">{product.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="h6"
+                    sx={{fontSize: "35px", fontWeight: 500, color: "#fdc200" }}
+                  >
+                    {product.name}
+                  </Typography>
+                  <Typography variant="h5" color="white">
                     Price: ${product.price}
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ mt: 1 }}
+                    sx={{ mt: 1, color: "#fff" }}
                   >
                     {product.description}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ mt: 1}}
-                    onClick={() => handleOrderNow(product._id)}
-                  >
-                    Order Now
-                  </Button>
-
-                  <Grid item >
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={{ mt: 2,mb:2 }}
-                      onClick={() => handleAddToCart(product._id)} // Pass product ID
-                      fullWidth
-                    >
-                      Add to Cart
-                    </Button>
+  
+                  <Grid container spacing={1} sx={{ mt: 1, justifyContent: "center" }}>
+                    {/* Order Now Button */}
+                    <Grid item xs={9}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                          bgcolor: "black",
+                          color: "white",
+                          fontWeight: "bold",
+                          "&:hover": { bgcolor: "gray" },
+                        }}
+                        onClick={() => handleOrderNow(product._id)}
+                      >
+                        Order Now
+                      </Button>
+                    </Grid>
+  
+                    {/* Add to Cart Button */}
+                    <Grid item xs={1}>
+                      <Button
+                        sx={{
+                          borderRadius: 10,
+                          bgcolor: "#00000000",
+                          color: "gold",
+                          fontWeight: "bold",
+                          "&:hover": { bgcolor: "#00000000" },
+                        }}
+                        onClick={() => handleAddToCart(product._id)} // Pass product ID
+                        startIcon={<ShoppingCartIcon />}
+                      />
+                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>
@@ -159,6 +204,11 @@ const ProductList = () => {
       </Grid>
     </Box>
   );
+  
+
+
+  
+
 };
 
 export default ProductList;

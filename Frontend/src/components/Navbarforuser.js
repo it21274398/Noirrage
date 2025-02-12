@@ -159,7 +159,7 @@ const NavBar = () => {
       sx={{
         marginLeft: 45,
         fontSize: "1.2rem", // Larger font size for prominence
-        fontFamily: "'Lobster', cursive", // Premium font family
+       
         fontWeight: "500", // Slightly lighter for a sophisticated look
         color: isActive ? "#FFEB3B" : "red", // Elegant gold color for active
         display: "flex",
@@ -176,7 +176,7 @@ const NavBar = () => {
       }}
     >
 
-      <IoIosLogOut size={30}  />
+      Logout
     </Typography>
   )}
 </NavLink>

@@ -102,7 +102,7 @@ const OrderForm = () => {
           p: 3,
           position: "relative", // Ensures the button positions inside this box
           boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
-          borderRadius: 3,
+          borderRadius: 2,
           background: "linear-gradient(90deg, #232526, #414345)",
         }}
       >
@@ -184,7 +184,7 @@ const OrderForm = () => {
                     <Box
                       sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                     >
-                      <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
+                      <Typography color="white" variant="subtitle1" fontWeight="bold">
                         Quantity
                       </Typography>
                       <Box
@@ -254,7 +254,7 @@ const OrderForm = () => {
                           gap: 1,
                         }}
                       >
-                        <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
+                        <Typography color="white" variant="subtitle1" fontWeight="bold">
                           Pick a Color
                         </Typography>
                         <ToggleButtonGroup
@@ -301,7 +301,7 @@ const OrderForm = () => {
                           gap: 1,
                         }}
                       >
-                        <Typography color="#d7d7d7" variant="subtitle1" fontWeight="bold">
+                        <Typography color="white" variant="subtitle1" fontWeight="bold">
                           Available Sizes
                         </Typography>
                         <ToggleButtonGroup

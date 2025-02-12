@@ -8,6 +8,7 @@ import {
   Modal,
   Divider,
   Box,
+  Fade,
   LinearProgress,
   TextField,
 } from "@mui/material";
@@ -15,7 +16,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ViewAllcart from "./ViewAllcart";
 import { styled } from "@mui/system";
-
+import { Person, Email, Edit } from "@mui/icons-material";
+          
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
@@ -154,32 +156,85 @@ const Profile = () => {
             />
           </Box>
         ) : user ? (
+         
+          
           <Card
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              p: 2,
-              mb: 5,
-              bgcolor: "black",
-              borderRadius: 2,
-              color: "red",
-              boxShadow: 3,
-            }}
-          >
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6">Name: {user.name}</Typography>
-              <Typography variant="h6">Email: {user.email}</Typography>
-            </CardContent>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpen}
-              sx={{ height: "40px", minWidth: "120px" }}
-            >
-              Edit Profile
-            </Button>
-          </Card>
+  sx={{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    px: 1.5,
+    mb: 5,
+    bgcolor: "rgba(163, 164, 74, 0.3)",
+    borderRadius: 20,
+    color: "black",
+   
+    border: "1px solid rgba(255, 215, 0, 0.2)",
+    
+  }}
+>
+  <CardContent
+    sx={{
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 3,
+      flexGrow: 1,
+    }}
+  >
+    <Typography
+      variant="h6"
+      sx={{
+        fontWeight: "bold",
+        letterSpacing: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+       
+      }}
+    >
+      <Person sx={{ ml:1, color: "black" }} /> {user.name}
+    </Typography>
+    <Typography
+      variant="h6"
+      sx={{
+        fontWeight: "bold",
+        letterSpacing: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      <Email sx={{  ml:5, color: "black" }} /> {user.email}
+    </Typography>
+  </CardContent>
+
+  <Button
+    variant="contained"
+    onClick={handleOpen}
+    sx={{
+      height: "45px",
+      minWidth: "130px",
+      bgcolor: "gold",
+      color: "black",
+      fontWeight: "bold",
+      display: "flex",
+      alignItems: "center",
+      gap: 1,
+      borderRadius:50,
+      "&:hover": {
+        bgcolor: "black",
+        color: "gold",
+      },
+    }}
+  >
+    <Edit /> Edit Profile
+  </Button>
+</Card>
+
+          
+
         ) : (
           <Typography>No profile data found.</Typography>
         )}
@@ -323,50 +378,69 @@ const Profile = () => {
           )}
         </Box>
         {/* Edit Profile Modal */}
-        <Modal open={open} onClose={handleClose}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
-              bgcolor: "white",
-              boxShadow: 24,
-              p: 3,
-              borderRadius: 2,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Edit Profile
-            </Typography>
-            <TextField
-              fullWidth
-              label="Name"
-              variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleUpdateProfile}
-              fullWidth
-            >
-              Save Changes
-            </Button>
-          </Box>
-        </Modal>
-        <Divider sx={{ backgroundColor: "#FFD700", height: "0.8px", my: 2 }} />
+
+<Modal open={open} onClose={handleClose}>
+  <Fade in={open}>
+    <Box
+      sx={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        bgcolor: "rgba(94, 94, 94, 0.9)", // Matches golden theme
+        boxShadow: "0px 0px 20px rgb(0, 0, 0)",
+        p: 3,
+        borderRadius: 2,
+        color: "#000",
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "#FFD700" }}>
+        Edit Profile
+      </Typography>
+
+      <TextField
+        fullWidth
+        label="Name"
+        variant="outlined"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        sx={{ mb: 2, bgcolor: "white", borderRadius: 1 }}
+        InputProps={{
+          startAdornment: <Person sx={{ color: "#FFD700", mr: 1 }} />,
+        }}
+      />
+
+      <TextField
+        fullWidth
+        label="Email"
+        variant="outlined"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        sx={{ mb: 2, bgcolor: "white", borderRadius: 1 }}
+        InputProps={{
+          startAdornment: <Email sx={{ color: "#FFD700", mr: 1 }} />,
+        }}
+      />
+
+      <Button
+        variant="contained"
+        onClick={handleUpdateProfile}
+        fullWidth
+        sx={{
+          bgcolor: "gold",
+          color: "black",
+          fontWeight: "bold",
+          "&:hover": { bgcolor: "orange" },
+        }}
+      >
+        Save Changes
+      </Button>
+    </Box>
+  </Fade>
+</Modal>
+
+        <Divider sx={{border:"1px solid black", backgroundColor: "#FFD700", height: "0.8px", my: 2 }} />
 
         <ViewAllcart />
       </FullWidthSection>

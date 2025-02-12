@@ -6,6 +6,7 @@ import {
   CardContent,
   Button,
   Modal,
+  Divider,
   Box,
   LinearProgress,
   TextField,
@@ -177,70 +178,77 @@ const Profile = () => {
       ) : (
         <Typography>No profile data found.</Typography>
       )}
+     <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 2, p: 2 }}>
       {orders && orders.length > 0 ? (
         orders.map((order) => (
-          <Card key={order._id} sx={{ mb: 2, p: 2 }}>
+          <Card
+            key={order._id}
+            sx={{
+              background: "linear-gradient(135deg, #232526, #414345)",
+              boxShadow: "0 6px 15px rgba(0, 0, 0, 0.5)",
+              borderRadius: "12px",
+              p: 2,
+              textAlign: "center",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.02)",
+                boxShadow: "0 10px 20px rgba(0, 0, 0, 0.6)",
+              },
+            }}
+          >
             <CardContent>
-              {order.products?.map((item) => (
-                <Box>
-                  <img
-                    alt={item.product?.name}
-                    src={`http://localhost:5000${item.product?.image}`}
-                    style={{
-                      width: "50%",
-                      maxHeight: "150px",
-                      objectFit: "contain",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </Box>
-              ))}
-              <Typography variant="body1" display="flex" alignItems="center">
-                Status: {order.status}
-                <Box
-                  sx={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: "50%",
-                    backgroundColor:
-                      order.status === "Shipped" ? "#4CAF50" : "#F44336",
-                    ml: 1, // Adds spacing between text and dot
-                  }}
+              {/* Product Name Centered */}
+              <Typography variant="h6" sx={{ color: "#FFD700", fontWeight: "bold", textAlign: "left" }}>
+                {order.products[0]?.product?.name}
+              </Typography>
+
+              {/* Image Below Name */}
+              <Box
+                sx={{
+                
+                  borderRadius: "8px",
+                  p: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mt: 1,
+                }}
+              >
+                <img
+                  src={`http://localhost:5000${order.products[0]?.product?.image}`}
+                  alt={order.products[0]?.product?.name}
+                  style={{ width: "200px", height: "200px", objectFit: "contain", borderRadius: "5px" }}
                 />
-              </Typography>
+              </Box>
 
-              <Typography variant="body1">
-                Total: ${order.totalPrice}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Ordered on: {new Date(order.createdAt).toLocaleDateString()}
-              </Typography>
+              {/* Order Details in Row Format */}
+              <Box mt={2} sx={{ display: "flex", justifyContent: "space-around", alignItems: "center", color: "#fff" }}>
+                <Typography variant="body1">Status: {order.status}</Typography>
+                <Typography variant="body1">Total: ${order.totalPrice}</Typography>
+              </Box>
 
-              {/* Display ordered products */}
-              {order.items?.map((item) => (
-                <Card key={item._id} sx={{ mt: 1, p: 1, bgcolor: "#f5f5f5" }}>
-                  <Typography variant="body1">
-                    {item.productName} - ${item.price} x {item.quantity}
-                  </Typography>
-                </Card>
-              ))}
+              <Button
+                variant="contained"
+                sx={{fontWeight: "bold",
+                  color:"black",
+                  background: "gold",
+                  mt: 2,
+                  "&:hover": { background: "red" },
+                }}
+              
+                onClick={(event) => handleCancelOrder(order._id, order.status, event)}
+              >
+                Cancel Order
+              </Button>
             </CardContent>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(event) =>
-                handleCancelOrder(order._id, order.status, event)
-              }
-              fullWidth
-            >
-              Cancel Order
-            </Button>
           </Card>
         ))
       ) : (
-        <Typography>No orders found.</Typography>
+        <Typography variant="h6" sx={{ color: "#fff", textAlign: "center" }}>
+          No orders found.
+        </Typography>
       )}
-
+    </Box>
       {/* Edit Profile Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box

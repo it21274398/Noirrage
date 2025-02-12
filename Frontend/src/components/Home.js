@@ -56,6 +56,7 @@ const HeroSubtitle = styled(Typography)(({ theme }) => ({
 }));
 
 const HeroButton = styled(Button)(({ theme }) => ({
+   to:"/CustProductList",
   marginTop: '20px',
   padding: '12px 30px',
   fontSize: '1rem',
@@ -91,7 +92,8 @@ const Home = () => {
 
       {/* Featured Products Section - Full Width */}
       <FullWidthSection>
-        <Typography 
+        <Typography
+       
           variant="h4" 
           textAlign="center" 
           fontWeight={600} 

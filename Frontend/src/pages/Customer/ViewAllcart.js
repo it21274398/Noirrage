@@ -77,6 +77,18 @@ const Cart = () => {
 
   return (
     <Box sx={{ padding: "40px", minHeight: "100vh" }}>
+      <Typography
+        sx={{
+          textAlign: "center",
+          fontSize: "2.7rem",
+          fontWeight: "bold",
+          color: "white",
+          mb: 6,
+          fontFamily: "'Raleway', sans-serif",
+        }}
+      >
+        My cart
+      </Typography>
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress
@@ -104,14 +116,12 @@ const Cart = () => {
             <Grid item xs={12} sm={10} md={6} key={item._id}>
               <Card
                 sx={{
-                  
-                 
                   boxShadow: "0px 12px 20px rgb(0, 0, 0)",
                   borderRadius: 2,
                   background: "linear-gradient(90deg, #232526, #414345)",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    border:"1px solid rgba(171, 170, 170, 0.55)",
+                    border: "1px solid rgba(171, 170, 170, 0.55)",
                     transform: "scale(1.02)",
                     boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.9)",
                   },
@@ -180,7 +190,7 @@ const Cart = () => {
                   </Box>
                 </CardContent>
                 {/*order Buttons */}
-                <Box sx={{ ml: 30, mt: -4, mb: 5, textAlign: "center" }}>
+                <Box sx={{ ml: 30, mb: 5, textAlign: "center" }}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -195,11 +205,10 @@ const Cart = () => {
                     Order Now
                   </Button>
                   <Button
-                 
                     variant="contained"
                     color="primary"
                     sx={{
-                      marginLeft:3,
+                      marginLeft: 3,
                       bgcolor: "gold",
                       color: "black",
                       fontWeight: "bold",

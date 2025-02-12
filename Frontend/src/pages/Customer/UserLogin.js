@@ -57,6 +57,14 @@ const UserLogin = () => {
   };
 
   return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center", // Center horizontally
+        alignItems: "center", // Center vertically
+        height: "100vh", // Full viewport height
+      }}
+    >
     <Container maxWidth="sm">
       <Box
   sx={{
@@ -157,7 +165,7 @@ const UserLogin = () => {
           </Button>
         </form>
       </Box>
-    </Container>
+    </Container></Box>
   );
 };
 

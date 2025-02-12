@@ -134,7 +134,7 @@ const Profile = () => {
 
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
-          <LinearProgress color="primary" />
+          <LinearProgress sx={{backgroundColor:"#fcd600"}} />
         </Box>
       ) : user ? (
         <Card

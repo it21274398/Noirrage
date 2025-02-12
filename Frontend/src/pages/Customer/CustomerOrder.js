@@ -4,15 +4,16 @@ import {
   TextField,
   Button,
   Typography,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
   Box,
+  IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Add, Remove } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const OrderForm = () => {
   const navigate = useNavigate();
@@ -84,49 +85,58 @@ const OrderForm = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Box
+  sx={{
+    display: "flex",
+    justifyContent: "center", // Center horizontally
+    alignItems: "center", // Center vertically
+    height: "100vh", // Full viewport height
+  }}
+>
+ 
+<Container maxWidth="xl">
+      
       <Box
         sx={{
-          mt: 5,
+          mt: 5, // Moves below navbar (adjust if needed)
           p: 3,
-          boxShadow: 3,
-          borderRadius: 2,
-backgroundColor:"white"
+          position: "relative", // Ensures the button positions inside this box
+          boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
+          borderRadius: 3,
+          background: "linear-gradient(90deg, #232526, #414345)",
         }}
       >
+        {/* Close Button in Top-Right */}
+        <IconButton
+          onClick={cancel}
+          sx={{
+            position: "absolute",
+            top: 8, // Position from the top inside the box
+            right: 8, // Position from the right inside the box
+            color: "red",
+            backgroundColor: "transparent",
+            "&:hover": {
+              backgroundColor: "rgba(255, 0, 0, 0.1)",
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
         {/* Flexbox for Left Image & Right Form */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           {/* Left Side - Product Image (40%) */}
-          <Box sx={{ width: "40%", textAlign: "center" }}>
-            <Typography variant="h5" gutterBottom>
-              Place an Order
-            </Typography>
-
+          <Box sx={{ width: "35%", textAlign: "center" }}>
             <img
               alt={selectedProduct?.name}
               src={`http://localhost:5000${selectedProduct?.image}`}
               style={{
                 width: "100%",
-                maxHeight: "300px",
+                boxShadow: "0px 12px 20px rgb(0, 0, 0), 0.88)",
                 objectFit: "contain",
                 borderRadius: "10px",
               }}
             />
-
-            <Button
-              onClick={cancel}
-              sx={{
-                backgroundColor: "black",
-                color: "white",
-                mt: 2,
-                fontWeight: "bold",
-                transition: "0.3s ease-in-out",
-                
-                "&:hover": { backgroundColor: "#C9A227", color: "black" },
-              }}
-            >
-              Cancel
-            </Button>
           </Box>
 
           {/* Right Side - Order Form (60%) */}
@@ -134,85 +144,200 @@ backgroundColor:"white"
             sx={{
               width: "60%",
               p: 3,
-             
+
               borderRadius: 2,
             }}
           >
             <form onSubmit={handleOrderSubmit}>
-              {/* Step 1: Product selection */}
+              {/*------------------------------------------------------------ Product details------------------------------------------------------------*/}
               {step === 1 && selectedProduct && (
                 <>
-                  <Typography variant="h5" gutterBottom>
-                    Order Details
-                  </Typography>
-                  <Typography variant="h6">{selectedProduct.name}</Typography>
-                  <TextField
-                    label="Quantity"
-                    type="number"
-                    fullWidth
-                    margin="normal"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    required
-                  />
-                  <FormControl fullWidth margin="normal" required>
-                    <InputLabel>Color</InputLabel>
-                    <Select
-                      value={color}
-                      onChange={(e) => setColor(e.target.value)}
-                    >
-                      {availableColors.length > 0 ? (
-                        availableColors.map((colorOption, index) => (
-                          <MenuItem key={index} value={colorOption}>
-                            {colorOption}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem value="" disabled>
-                          No colors available
-                        </MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl fullWidth margin="normal" required>
-                    <InputLabel>Size</InputLabel>
-                    <Select
-                      value={size}
-                      onChange={(e) => setSize(e.target.value)}
-                    >
-                      {availableSizes.length > 0 ? (
-                        availableSizes.map((sizeOption, index) => (
-                          <MenuItem key={index} value={sizeOption}>
-                            {sizeOption}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem value="" disabled>
-                          No sizes available
-                        </MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
-                    onClick={handleNext}
-                    fullWidth
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontFamily: "'Raleway', sans-serif",
+                      fontSize: "2em",
+                    }}
+                    color="#fdc200"
+                    mb={5}
                   >
-                    Next
-                  </Button>
-                </>
-              )}
+                  Fill Order Details of {selectedProduct.name}
+                  </Typography>
 
-              {/* Step 2: Shipping details */}
-              {step === 2 && (
-                <>
-                  <Typography variant="h5" gutterBottom>
+                 
+
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                   
+
+                    {/* Color & Size Row */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-evenly",
+
+                        flexWrap: "wrap",
+                      }}
+                    >
+                       {/* Quantity Selector */}
+                    <Box
+                      sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    >
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        Quantity
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          width: "fit-content",
+                        }}
+                      >
+                        <IconButton
+                          onClick={() =>
+                            setQuantity((prev) => Math.max(prev - 1, 1))
+                          }
+                          sx={{
+                            color: "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "500px",
+                          }}
+                        >
+                          <Remove />
+                        </IconButton>
+                        <TextField
+                          type="number"
+                          value={quantity}
+                          onChange={(e) =>
+                            setQuantity(Math.max(Number(e.target.value), 1))
+                          }
+                          inputProps={{
+                            min: 1,
+                            style: {
+                              color: "white",
+                              border: "1px solid #ccc",
+                              textAlign: "center",
+                             
+                              MozAppearance: "textfield", // Firefox
+                            },
+                          }}
+                          sx={{
+                            width: "50px",
+                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                              {
+                                WebkitAppearance: "none",
+                                margin: 0,
+                              },
+                          }}
+                        />
+
+                        <IconButton
+                          onClick={() => setQuantity((prev) => prev + 1)}
+                          sx={{
+                            color: "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "500px",
+                          }}
+                        >
+                          <Add />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                      {/* Color Selector */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="subtitle1" fontWeight="bold">
+                          Pick a Color
+                        </Typography>
+                        <ToggleButtonGroup
+                          value={color}
+                          exclusive
+                          onChange={(e) => setColor(e.target.value)}
+                          aria-label="color selection"
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                        >
+                          {availableColors.length > 0 ? (
+                            availableColors.map((color, index) => (
+                              <ToggleButton
+                                key={index}
+                                value={color}
+                                sx={{
+                                  padding: 3,
+                                  backgroundColor: color.toLowerCase(),
+                                  color: "gray",
+                                  border: "1px solid black",
+                                  "&.Mui-selected": {
+                                    border: "2px solid black",
+                                  },
+                                  "&:hover": { opacity: 0.8 },
+                                }}
+                              ></ToggleButton>
+                            ))
+                          ) : (
+                            <ToggleButton value="" disabled>
+                              No colors available
+                            </ToggleButton>
+                          )}
+                        </ToggleButtonGroup>
+                      </Box>
+
+                      {/* Size Selector */}
+                      <Box
+                        sx={{
+                          
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="subtitle1" fontWeight="bold">
+                          Available Sizes
+                        </Typography>
+                        <ToggleButtonGroup
+                          value={size}
+                          exclusive
+                          onChange={(e) => setSize(e.target.value)}
+                          aria-label="size selection"
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                        >
+                          {availableSizes.length > 0 ? (
+                            availableSizes.map((sizeOption, index) => (
+                              <ToggleButton
+                                key={index}
+                                value={sizeOption}
+                                sx={{color:"white",
+                                  border: "1px solid #ccc",
+                                  fontWeight: "bold",
+                                  "&.Mui-selected": {
+                                    border: "1px solid black",
+                                    backgroundColor: "#f0f0f0",
+                                  },
+                                  "&:hover": { backgroundColor: "#e0e0e0" },
+                                }}
+                              >
+                                {sizeOption}
+                              </ToggleButton>
+                            ))
+                          ) : (
+                            <ToggleButton value="" disabled>
+                              No sizes available
+                            </ToggleButton>
+                          )}
+                        </ToggleButtonGroup>
+                      </Box>
+                    </Box>
+                  </Box>
+                  {/*------------------------------------------------------------ Shipping details------------------------------------------------------------*/}
+                  <Typography mt={3} variant="h5" gutterBottom>
                     Shipping Details
                   </Typography>
-
                   <TextField
                     label="Email"
                     type="email"
@@ -225,6 +350,14 @@ backgroundColor:"white"
                         email: e.target.value,
                       })
                     }
+                    sx={{
+                      "& label": { color: "gray" }, // Default label color
+                      "& label.Mui-focused": { color: "white" }, // Focused label color
+                      "& input": { color: "white" }, // User-typed text color
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "gray" }, // Default border color
+                      },
+                    }}
                     required
                   />
                   <TextField
@@ -238,6 +371,14 @@ backgroundColor:"white"
                         address: e.target.value,
                       })
                     }
+                    sx={{
+                      "& label": { color: "gray" }, // Default label color
+                      "& label.Mui-focused": { color: "white" }, // Focused label color
+                      "& input": { color: "white" }, // User-typed text color
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "gray" }, // Default border color
+                      },
+                    }}
                     required
                   />
                   <TextField
@@ -251,8 +392,43 @@ backgroundColor:"white"
                         contactNumber: e.target.value,
                       })
                     }
+                    sx={{
+                      "& label": { color: "gray" }, // Default label color
+                      "& label.Mui-focused": { color: "white" }, // Focused label color
+                      "& input": { color: "white" }, // User-typed text color
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "gray" }, // Default border color
+                      },
+                    }}
                     required
                   />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      position:"absolute",
+                      right:"0",
+                      bottom:"0",
+                      mr:6,
+                      mb:1,
+                      bgcolor:"black",
+                      // background: "linear-gradient(180deg ,rgba(0, 0, 0, 0.78) , #434343,rgba(0, 0, 0, 0.81))" ,
+                      color: "white",
+                      fontWeight: "bold",
+                      "&:hover": { color:"black", bgcolor: "white", boxShadow: "0px 0px 10px rgba(159, 159, 159, 0.88)", },
+                     
+                    }}
+                    onClick={handleNext}
+                    
+                  >
+                    Next
+                  </Button>
+                </>
+              )}
+
+              {/* Step 2: Shipping details */}
+              {step === 2 && (
+                <>
                   <Button
                     variant="contained"
                     color="secondary"
@@ -264,8 +440,8 @@ backgroundColor:"white"
                   </Button>
                   <Button
                     variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
+                   
+                    sx={{ mt: 2,background: "linear-gradient(90deg,  #FFD200 , #F7971E, #FFD200)" }}
                     type="submit"
                     fullWidth
                   >
@@ -278,6 +454,8 @@ backgroundColor:"white"
         </Box>
       </Box>
     </Container>
+</Box>
+
   );
 };
 

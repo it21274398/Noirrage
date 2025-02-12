@@ -186,7 +186,7 @@ const AddProduct = () => {
                 value={productData.colors}
                 onChange={handleChange}
               >
-                {["Black", "Gray", "White"].map((color) => (
+                {["Black", "Gray", "White","red", "green", "yellow"].map((color) => (
                   <MenuItem key={color} value={color}>
                     {color}
                   </MenuItem>

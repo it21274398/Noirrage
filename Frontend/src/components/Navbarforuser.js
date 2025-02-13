@@ -1,13 +1,31 @@
 import React, { useState } from "react";
-import { Box, Typography, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import logo from "../images/logo.png";
+import { Link } from "react-router-dom";
 
-const Navbar = ({ showNavBar, handleLogout }) => {
+const Navbar = ({ showNavBar }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = (userType) => {
+    if (userType === "admin") {
+      localStorage.removeItem("userToken");
+    }
+
+    navigate("/"); // Redirect to home after logout
+  };
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -40,7 +58,11 @@ const Navbar = ({ showNavBar, handleLogout }) => {
       {/* Logo */}
       <a href="/home">
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} alt="Logo" style={{ height: "75px", marginLeft: "20px" }} />
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ height: "75px", marginLeft: "20px" }}
+          />
         </Box>
       </a>
 
@@ -50,55 +72,77 @@ const Navbar = ({ showNavBar, handleLogout }) => {
           <IconButton onClick={toggleDrawer(true)} sx={{ color: "white" }}>
             <MenuIcon fontSize="large" />
           </IconButton>
-          <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+          <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={toggleDrawer(false)}
+          >
             <List sx={{ width: 250 }}>
               {navLinks.map((link) => (
-                <ListItem button key={link.path} component={NavLink} to={link.path} onClick={toggleDrawer(false)}>
-                  <ListItemText primary={link.label} sx={{ textAlign: "center" }} />
+                <ListItem
+                  button
+                  key={link.path}
+                  component={NavLink}
+                  to={link.path}
+                  onClick={toggleDrawer(false)}
+                >
+                  <ListItemText
+                    primary={link.label}
+                    sx={{ textAlign: "center" }}
+                  />
                 </ListItem>
               ))}
               <ListItem button onClick={() => handleLogout("user")}>
-                <ListItemText primary="Logout" sx={{ textAlign: "center", color: "red" }} />
+                <ListItemText
+                  primary="Logout"
+                  sx={{ textAlign: "center", color: "red" }}
+                />
               </ListItem>
             </List>
           </Drawer>
         </>
       ) : (
-        <Box sx={{ display: "flex", textAlign: "center",gap: 8 }}>
-          <Box 
-  sx={{ 
-    display: "flex", 
-    justifyContent: "center",  // Centers all nav links
-    alignItems: "center", 
-    gap: 8,
-    mr:35, 
-    flexWrap: "wrap"  // Ensures wrapping on small screens
-  }}
->
-  {navLinks.map((link) => (
-    <NavLink key={link.path} to={link.path} style={{ textDecoration: "none" }}>
-      {({ isActive }) => (
-        <Typography
-          sx={{
-            fontSize: "1.2rem",
-            fontFamily: "'Raleway', sans-serif",
-            color: isActive ? "#FFEB3B" : "#FFF",
-            "&:hover": {
-              color: "#FFEB3B",
-              transform: "scale(1.1)",
-              transition: "transform 0.3s ease-in-out",
-            },
-            transition: "color 0.3s ease-in-out, transform 0.3s ease-in-out",
-          }}
-        >
-          {link.label}
-        </Typography>
-      )}
-    </NavLink>
-  ))}
-</Box>
+        <Box sx={{ display: "flex", textAlign: "center", gap: 8 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center", // Centers all nav links
+              alignItems: "center",
+              gap: 8,
+              mr: 35,
+              flexWrap: "wrap", // Ensures wrapping on small screens
+            }}
+          >
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                style={{ textDecoration: "none" }}
+              >
+                {({ isActive }) => (
+                  <Typography
+                    sx={{
+                      fontSize: "1.2rem",
+                      fontFamily: "'Raleway', sans-serif",
+                      color: isActive ? "#FFEB3B" : "#FFF",
+                      "&:hover": {
+                        color: "#FFEB3B",
+                        transform: "scale(1.1)",
+                        transition: "transform 0.3s ease-in-out",
+                      },
+                      transition:
+                        "color 0.3s ease-in-out, transform 0.3s ease-in-out",
+                    }}
+                  >
+                    {link.label}
+                  </Typography>
+                )}
+              </NavLink>
+            ))}
+          </Box>
 
-          <Typography
+          <Link
+            onClick={() => handleLogout("user")}
             to="/"
             sx={{
               fontSize: "1.2rem",
@@ -107,12 +151,13 @@ const Navbar = ({ showNavBar, handleLogout }) => {
               "&:hover": {
                 color: "#FFEB3B",
                 transform: "scale(1.1)",
-                transition: "transform 0.3s ease-in-out, color 0.3s ease-in-out",
+                transition:
+                  "transform 0.3s ease-in-out, color 0.3s ease-in-out",
               },
             }}
           >
             Logout
-          </Typography>
+          </Link>
         </Box>
       )}
     </Box>

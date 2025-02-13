@@ -12,10 +12,21 @@ import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import logo from "../images/logo.png";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Navbar = ({ showNavBar, handleLogout }) => {
+const Navbar = ({ showNavBar }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = (userType) => {
+    if (userType === "admin") {
+      localStorage.removeItem("adminToken");
+    }
+
+    navigate("/");
+  };
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -131,8 +142,9 @@ const Navbar = ({ showNavBar, handleLogout }) => {
             ))}
           </Box>
 
-          <Typography
+          <Link
             to="/"
+            onClick={() => handleLogout("admin")}
             sx={{
               fontSize: "1.2rem",
               fontWeight: "500",
@@ -146,7 +158,7 @@ const Navbar = ({ showNavBar, handleLogout }) => {
             }}
           >
             Logout
-          </Typography>
+          </Link>
         </Box>
       )}
     </Box>

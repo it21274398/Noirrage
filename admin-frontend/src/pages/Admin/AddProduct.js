@@ -27,7 +27,7 @@ const AddProduct = () => {
     price: "",
     description: "",
     category: "",
-    image: null,
+    images: [], // Ensure this is always an array
     imagePreview: null,
     sizes: [],
     colors: [],
@@ -35,26 +35,27 @@ const AddProduct = () => {
 
   const admintoken = localStorage.getItem("adminToken");
   const navigate = useNavigate();
+  const categories = ["Men", "Women", "Kids"];
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProductData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setProductData({ ...productData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && ["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
-      setProductData((prevData) => ({
-        ...prevData,
-        image: file,
-        imagePreview: URL.createObjectURL(file),
-      }));
-    } else {
-      toast.error("Only PNG, JPG, and JPEG files are allowed.");
-    }
+    const files = Array.from(e.target.files); // Convert FileList to an array
+    setProductData((prevData) => ({
+      ...prevData,
+      images: [...(prevData.images || []), ...files], // Ensure it's always an array
+    }));
+  };
+
+  const handleRemoveImage = (index) => {
+    setProductData((prevData) => ({
+      ...prevData,
+      images: prevData.images
+        ? prevData.images.filter((_, i) => i !== index)
+        : [],
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -62,18 +63,18 @@ const AddProduct = () => {
 
     if (!admintoken) {
       console.error("No admin token found");
-      navigate("/"); 
-      return;
-    }
-
-    if (!productData.image) {
-      toast.error("Please upload a product image.");
+      navigate("/");
       return;
     }
 
     const formData = new FormData();
-    Object.entries(productData).forEach(([key, value]) => {
-      if (key !== "imagePreview") formData.append(key, value);
+    formData.append("title", productData.title);
+    formData.append("description", productData.description);
+    formData.append("price", productData.price);
+    formData.append("category", productData.category);
+
+    productData.images.forEach((image) => {
+      formData.append("images", image); // Append each image
     });
 
     try {
@@ -84,10 +85,10 @@ const AddProduct = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      toast.success(response.data.message);
-      navigate("/admin/ProductList");
+      console.log("Product added:", response.data);
+      alert("Product added successfully!");
     } catch (error) {
-      toast.error(error.response?.data.message || "Error adding product");
+      console.error("Error adding product:", error);
     }
   };
 
@@ -110,23 +111,23 @@ const AddProduct = () => {
       setColorInput("");
     }
   };
-// Function to handle color removal
-const removeColor = (colorToRemove) => {
-  setProductData({
-    ...productData,
-    colors: productData.colors.filter((color) => color !== colorToRemove),
-  });
-};
-
+  // Function to handle color removal
+  const removeColor = (colorToRemove) => {
+    setProductData({
+      ...productData,
+      colors: productData.colors.filter((color) => color !== colorToRemove),
+    });
+  };
 
   return (
+    <form onSubmit={handleSubmit} encType="multipart/form-data">
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        
+
         padding: 3,
       }}
     >
@@ -134,7 +135,7 @@ const removeColor = (colorToRemove) => {
         sx={{
           width: "100%",
           maxWidth: 1200,
-          border:"1px solid rgb(104, 104, 104)",
+          border: "1px solid rgb(104, 104, 104)",
           boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
           borderRadius: 2,
           background: "linear-gradient(90deg, #232526, #414345)",
@@ -155,7 +156,6 @@ const removeColor = (colorToRemove) => {
               onChange={handleChange}
               required
               sx={{
-                
                 marginBottom: 2,
                 "& label": { color: "gray" }, // Default label color
                 "& label.Mui-focused": { color: "white" }, // Focused label color
@@ -201,7 +201,6 @@ const removeColor = (colorToRemove) => {
                   "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
                 },
               }}
-          
             />
             <TextField
               label="Category"
@@ -240,10 +239,11 @@ const removeColor = (colorToRemove) => {
             />
             <Button
               onClick={addSize}
-              sx={{ bgcolor: "black",
+              sx={{
+                bgcolor: "black",
                 color: "white",
                 fontWeight: "bold",
-                "&:hover": { bgcolor: "gray",color: "black"},
+                "&:hover": { bgcolor: "gray", color: "black" },
                 marginBottom: 2,
                 "& label": { color: "gray" }, // Default label color
                 "& label.Mui-focused": { color: "white" }, // Focused label color
@@ -259,7 +259,17 @@ const removeColor = (colorToRemove) => {
             </Button>
             <Box sx={{ marginBottom: 2 }}>
               {productData.sizes.map((size) => (
-                <Chip  key={size} label={size} sx={{ fontWeight: "bold", backgroundColor:"gray",p:2, color:"black",margin: 0.5 }} />
+                <Chip
+                  key={size}
+                  label={size}
+                  sx={{
+                    fontWeight: "bold",
+                    backgroundColor: "gray",
+                    p: 2,
+                    color: "black",
+                    margin: 0.5,
+                  }}
+                />
               ))}
             </Box>
 
@@ -280,44 +290,43 @@ const removeColor = (colorToRemove) => {
                 },
               }}
             />
-          
-<Button
-  onClick={addColor}
-  variant="contained"
-  sx={{
-    marginBottom: 2,
-    bgcolor: "black",
-    color: "white",
-    fontWeight: "bold",
-    "&:hover": { bgcolor: "gray", color: "black" },
-  }}
->
-  Add Color
-</Button>
-            <Box sx={{ marginBottom: 2 }}>
-    {productData.colors.map((color) => (
-      <Chip
-        key={color}
-        label={color}
-        sx={{
-          fontWeight: "bold",
-          fontSize: 15,
-          backgroundColor: color, // Apply the color entered by the user as background
-          p: 1,
-          border: "1px solid rgba(255, 217, 0, 0.32)",
-          color: "black",
-          margin: 0.5,
-          position: "relative", // To position the close icon
-        }}
-        // Adding the delete icon
-        deleteIcon={
-          <DeleteIcon sx={{ color: "white", fontSize: 18 }} />
-        }
-        onDelete={() => removeColor(color)} // Calling the remove function
-      />
-    ))}
-  </Box>
 
+            <Button
+              onClick={addColor}
+              variant="contained"
+              sx={{
+                marginBottom: 2,
+                bgcolor: "black",
+                color: "white",
+                fontWeight: "bold",
+                "&:hover": { bgcolor: "gray", color: "black" },
+              }}
+            >
+              Add Color
+            </Button>
+            <Box sx={{ marginBottom: 2 }}>
+              {productData.colors.map((color) => (
+                <Chip
+                  key={color}
+                  label={color}
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: 15,
+                    backgroundColor: color, // Apply the color entered by the user as background
+                    p: 1,
+                    border: "1px solid rgba(255, 217, 0, 0.32)",
+                    color: "black",
+                    margin: 0.5,
+                    position: "relative", // To position the close icon
+                  }}
+                  // Adding the delete icon
+                  deleteIcon={
+                    <DeleteIcon sx={{ color: "white", fontSize: 18 }} />
+                  }
+                  onDelete={() => removeColor(color)} // Calling the remove function
+                />
+              ))}
+            </Box>
           </Grid>
 
           {/* Right side: Image Upload Section */}
@@ -331,22 +340,53 @@ const removeColor = (colorToRemove) => {
             <Collapse in={imageSectionOpen}>
               <Divider sx={{ marginBottom: 2 }} />
               <Typography variant="h6" color="white" gutterBottom>
-                Product Image
+                Product Images
               </Typography>
-              {productData.imagePreview && (
+
+              {/* Display image previews */}
+              {productData.images.length > 0 && (
                 <Box sx={{ textAlign: "center", marginBottom: 2 }}>
-                  <img
-                    src={productData.imagePreview}
-                    alt="Preview"
-                    style={{ width: "100%", borderRadius: 8 }}
-                  />
+                  {productData.images.map((image, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        position: "relative",
+                        display: "inline-block",
+                        margin: "5px",
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt="Preview"
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: 8,
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => handleRemoveImage(index)}
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          background: "rgba(0,0,0,0.5)",
+                          color: "white",
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </Box>
+                  ))}
                 </Box>
               )}
+
               <input
                 accept="image/png, image/jpeg, image/jpg"
                 type="file"
+                multiple
                 onChange={handleFileChange}
-                sx={{ marginBottom: 2 }}
+                style={{ display: "block", marginBottom: 2 }}
               />
             </Collapse>
           </Grid>
@@ -355,13 +395,12 @@ const removeColor = (colorToRemove) => {
         <Box sx={{ marginTop: 3 }}>
           <Button
             variant="contained"
-           
             fullWidth
             sx={{
               bgcolor: "black",
               color: "white",
               fontWeight: "bold",
-              "&:hover": { bgcolor: "gold",color: "black"},
+              "&:hover": { bgcolor: "gold", color: "black" },
             }}
             onClick={handleSubmit}
           >
@@ -369,7 +408,7 @@ const removeColor = (colorToRemove) => {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </Box></form>
   );
 };
 

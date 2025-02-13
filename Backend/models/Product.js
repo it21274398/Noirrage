@@ -1,3 +1,4 @@
+// models/Product.js
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
@@ -6,13 +7,12 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    sizes: { type: [String], required: true }, // Array to store multiple sizes
-    colors: { type: [String], required: true }, // Array to store multiple colors
-    image: { type: String }, // Optional image for the product
+    sizes: { type: [String], required: true },
+    colors: { type: [String], required: true },
+    images: { type: [String], default: [] }, // Store multiple image paths
   },
   { timestamps: true }
 );
 
 const Product = mongoose.model('Product', productSchema);
-
 export default Product;

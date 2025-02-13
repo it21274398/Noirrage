@@ -8,13 +8,13 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ✅ Set storage engine
+// ✅ Set storage engine for multiple files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir); // Save files in the uploads folder
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+    cb(null, `${file.fieldname}-${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`);
   }
 });
 
@@ -27,7 +27,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ✅ Multer upload configuration
+// ✅ Multer upload configuration for multiple images
 export const upload = multer({
   storage: storage,
   fileFilter: fileFilter,

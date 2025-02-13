@@ -9,11 +9,14 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Ensure sizes and colors are arrays
+    // Convert sizes and colors to arrays
     const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
     const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    // Handle multiple images
+    const imageUrls = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : [];
 
     const newProduct = new Product({
       name,
@@ -22,14 +25,18 @@ export const addProduct = async (req, res) => {
       category,
       sizes: sizesArray,
       colors: colorsArray,
-      image: imageUrl,
+      images: imageUrls,
     });
 
     await newProduct.save();
-    return res.status(201).json({ message: "Product added successfully", product: newProduct });
+    return res
+      .status(201)
+      .json({ message: "Product added successfully", product: newProduct });
   } catch (error) {
-    console.error("Error adding product:", error); // ✅ Log error
-    return res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error adding product:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
@@ -59,14 +66,25 @@ export const getProductById = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { name, price, description, category, colors, sizes } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // Convert sizes and colors to arrays if needed
+    // Convert sizes and colors to arrays
     const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
     const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
 
-    const updatedFields = { name, price, description, category, colors: colorsArray, sizes: sizesArray };
-    if (imageUrl) updatedFields.image = imageUrl;
+    // Handle multiple images
+    const imageUrls = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : [];
+
+    const updatedFields = {
+      name,
+      price,
+      description,
+      category,
+      colors: colorsArray,
+      sizes: sizesArray,
+    };
+    if (imageUrls.length) updatedFields.images = imageUrls;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -76,8 +94,12 @@ export const updateProduct = async (req, res) => {
 
     if (!updatedProduct)
       return res.status(404).json({ message: "Product not found" });
-
-    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+    res
+      .status(200)
+      .json({
+        message: "Product updated successfully",
+        product: updatedProduct,
+      });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

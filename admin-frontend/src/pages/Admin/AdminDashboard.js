@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const token = localStorage.getItem("adminToken"); // Fetch token
+
   // Filter orders based on search term
   const filteredOrders = orders.filter((order) => {
     const emailMatch = order.shippingDetails.email
@@ -36,10 +38,21 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
+    if (!token) {
+          toast.error("Unauthorized! Please log in.");
+          return;
+        }
+    
+
+
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      return;
+    }
     try {
       const { data } = await axios.get(
         "http://localhost:5000/api/orders/all",
@@ -56,7 +69,10 @@ const AdminDashboard = () => {
 
   const markAsShipped = async (orderId) => {
     const token = localStorage.getItem("adminToken"); // Fetch token
-
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      return;
+    }
     try {
       const response = await axios.put(
         `http://localhost:5000/api/orders/${orderId}/ship`,

@@ -17,6 +17,8 @@ import Home from "./components/Home";
 import AboutUs from "./components/AboutUs";
 
 import AdminDashboard from "./pages/Customer/AdminDashboard";
+import Orderstatus from "./pages/Customer/OrderStatus";
+
 
 const Layout = () => {
   const location = useLocation();
@@ -36,7 +38,11 @@ const Layout = () => {
         <Route path="/CustomerOrder" element={<CustomerOrder />} />
         <Route path="/ViewAllcart" element={<ViewAllcart />} />
         <Route path="/Profile" element={<Profile />} />
+
+
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/userorders" element={<Orderstatus />} />
+
         {/* Other Routes */}
         <Route path="/Home" element={<Home />} />
         <Route path="/AboutUs" element={<AboutUs />} />

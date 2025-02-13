@@ -119,10 +119,11 @@ const Cart = () => {
                   boxShadow: "0px 12px 20px rgb(0, 0, 0)",
                   borderRadius: 2,
                   background: "linear-gradient(90deg, #232526, #414345)",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.2s ease",
+                  border: "0.5px solid rgba(100, 100, 100, 0.41)",
                   "&:hover": {
-                    border: "1px solid rgba(171, 170, 170, 0.55)",
-                    transform: "scale(1.02)",
+                    border: "1px solid rgba(171, 170, 170, 0.7)",
+                    transform: "scale(1)",
                     boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.9)",
                   },
                 }}

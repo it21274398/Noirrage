@@ -147,7 +147,7 @@ const AdminLogin = () => {
 
           <Typography color="gray" sx={{ mt: 1 }}>
             Don't have an account?{" "}
-            <Link to="/user/signup" style={{ color: "#003cff", textDecoration: "none", fontWeight: "bold" }}>
+            <Link to="/admin/signup" style={{ color: "#003cff", textDecoration: "none", fontWeight: "bold" }}>
               Sign Up
             </Link>
           </Typography>

@@ -4,27 +4,31 @@ import {
   CardContent,
   Typography,
   Grid,
+  CardMedia,
   Box,
   Button,
+  IconButton,
   LinearProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("userToken"); // Get token from localStorage
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -63,6 +67,21 @@ const ProductList = () => {
       toast.error(error.response?.data?.message || "Failed to add to cart.");
     }
   };
+
+  // Automatically change the image when the user hovers over the image
+  useEffect(() => {
+    let interval;
+    if (isHovering) {
+      interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === products.images?.length - 1 ? 0 : prevIndex + 1
+        );
+      },700); // Change image every 0.5 seconds
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval); // Clear the interval on unmount or hover end
+  }, [isHovering, products.images?.length]);
 
   return (
     <Box sx={{ padding: "20px" }}>
@@ -119,15 +138,31 @@ const ProductList = () => {
                     borderRadius: 1,
                   }}
                 >
-                  <img
-                    src={`http://localhost:5000${product.image}`}
-                    alt={product.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <Card>
+                    <Box
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: 200,
+                        overflow: "hidden",
+                      }}
+                      onMouseEnter={() => setIsHovering(true)} // Start auto transition on hover
+                      onMouseLeave={() => setIsHovering(false)} // Stop transition when hover ends
+                    >
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={`http://localhost:5000${product.images[currentImageIndex]}`}
+                        alt={product.name}
+                        sx={{
+                          transition: "transform 0.5s ease", // Smooth transition for images
+                        }}
+                      />
+                      <Typography variant="h6" sx={{ padding: 1 }}>
+                        {product.name}
+                      </Typography>
+                    </Box>
+                  </Card>
                 </Box>
                 <CardContent
                   sx={{

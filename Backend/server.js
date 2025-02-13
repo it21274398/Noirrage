@@ -14,7 +14,14 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 
 // Initialize dotenv and express
 dotenv.config();
+
 const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json()); // Parse JSON data
+app.use(express.urlencoded({ extended: true })); // ✅ Parse form-data properly
+
 
 // Fix "__dirname" in ES Modules
 const __filename = fileURLToPath(import.meta.url);

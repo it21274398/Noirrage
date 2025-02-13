@@ -36,6 +36,11 @@ const Profile = () => {
         console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        if (!orders) {
+          toast.error("Unauthorized! Please log in.");
+          return;
+        }
+    
         toast.error("Failed to fetch orders.");
       } finally {
         setPendingRequests((prev) => prev - 1);

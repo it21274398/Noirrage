@@ -10,14 +10,13 @@ import CustProduct from "./pages/Customer/CustProductList";
 import CustomerOrder from "./pages/Customer/CustomerOrder";
 import ViewAllcart from "./pages/Customer/ViewAllcart";
 import Profile from "./pages/Customer/Profile";
+import Orderstatus from "./pages/Customer/OrderStatus";
 
 // Other Imports
 import NavBarforuser from "./components/Navbarforuser";
 import Home from "./components/Home";
 import AboutUs from "./components/AboutUs";
 
-import AdminDashboard from "./pages/Customer/AdminDashboard";
-import Orderstatus from "./pages/Customer/OrderStatus";
 
 
 const Layout = () => {
@@ -40,7 +39,7 @@ const Layout = () => {
         <Route path="/Profile" element={<Profile />} />
 
 
-        <Route path="/admin" element={<AdminDashboard />} />
+      
         <Route path="/userorders" element={<Orderstatus />} />
 
         {/* Other Routes */}

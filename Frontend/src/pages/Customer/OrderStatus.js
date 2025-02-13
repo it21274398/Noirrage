@@ -133,7 +133,7 @@ const Profile = () => {
                  border: "0.5px solid rgba(100, 100, 100, 0.41)",
                   background: "linear-gradient(135deg, #232526, #414345)",
                   boxShadow: "0 6px 15px rgba(0, 0, 0, 0.7)",
-                  borderRadius: "7px",
+                  borderRadius: "15px",
                   p: 1,
                   m: 2,
                   textAlign: "center",

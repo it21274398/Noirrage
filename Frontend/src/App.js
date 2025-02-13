@@ -37,9 +37,6 @@ const Layout = () => {
         <Route path="/CustomerOrder" element={<CustomerOrder />} />
         <Route path="/ViewAllcart" element={<ViewAllcart />} />
         <Route path="/Profile" element={<Profile />} />
-
-
-      
         <Route path="/userorders" element={<Orderstatus />} />
 
         {/* Other Routes */}

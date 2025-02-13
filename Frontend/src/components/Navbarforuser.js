@@ -15,9 +15,11 @@ const Navbar = ({ showNavBar, handleLogout }) => {
 
   const navLinks = [
     { path: "/Home", label: "Home" },
-    { path: "/CustProductList", label: "See Items List" },
+    { path: "/CustProductList", label: "Feed" },
     { path: "/Profile", label: "View Profile" },
-    { path: "/ViewAllcart", label: "View Mycart" },
+    { path: "/ViewAllcart", label: "My Mycart" },
+    { path: "/AboutUs", label: "About Us" },
+    // { path: "/ViewAllcart", label: "My Mycart" },
   ];
 
   return (
@@ -68,8 +70,8 @@ const Navbar = ({ showNavBar, handleLogout }) => {
     display: "flex", 
     justifyContent: "center",  // Centers all nav links
     alignItems: "center", 
-    gap: 5,
-    mr:45, 
+    gap: 8,
+    mr:35, 
     flexWrap: "wrap"  // Ensures wrapping on small screens
   }}
 >

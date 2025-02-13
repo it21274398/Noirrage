@@ -32,7 +32,7 @@ const AdminLogin = () => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
       toast.success("Admin Logged In Successfully");
-      navigate("/Home"); // Redirect to orders page
+      navigate("/admin/AdminDashboard"); // Redirect to orders page
     } catch (error) {
       toast.error(error.response?.data?.message || "Login Failed");
     }

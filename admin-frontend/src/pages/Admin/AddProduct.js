@@ -5,16 +5,23 @@ import {
   Grid,
   Typography,
   Box,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
+  IconButton,
+  Chip,
+  Collapse,
+  Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import CloseIcon from "@mui/icons-material/Close";
 
 const AddProduct = () => {
+  const [sizeInput, setSizeInput] = useState("");
+  const [colorInput, setColorInput] = useState("");
+  const [imageSectionOpen, setImageSectionOpen] = useState(true); // Control for collapsible image section
+
   const [productData, setProductData] = useState({
     name: "",
     price: "",
@@ -25,23 +32,16 @@ const AddProduct = () => {
     sizes: [],
     colors: [],
   });
-  const admintoken = localStorage.getItem("adminToken"); // Get token from localStorage
+
+  const admintoken = localStorage.getItem("adminToken");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Handle multiple selections for sizes and colors
-    if (name === "sizes" || name === "colors") {
-      setProductData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    } else {
-      setProductData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -58,13 +58,13 @@ const AddProduct = () => {
   };
 
   const handleSubmit = async (e) => {
-    //if token not found redirect to admin login
+    e.preventDefault();
+
     if (!admintoken) {
       console.error("No admin token found");
-      navigate("/"); // Redirect if no token
+      navigate("/"); 
       return;
     }
-    e.preventDefault();
 
     if (!productData.image) {
       toast.error("Please upload a product image.");
@@ -91,133 +91,284 @@ const AddProduct = () => {
     }
   };
 
+  const addSize = () => {
+    if (sizeInput && !productData.sizes.includes(sizeInput)) {
+      setProductData({
+        ...productData,
+        sizes: [...productData.sizes, sizeInput],
+      });
+      setSizeInput("");
+    }
+  };
+
+  const addColor = () => {
+    if (colorInput && !productData.colors.includes(colorInput)) {
+      setProductData({
+        ...productData,
+        colors: [...productData.colors, colorInput],
+      });
+      setColorInput("");
+    }
+  };
+// Function to handle color removal
+const removeColor = (colorToRemove) => {
+  setProductData({
+    ...productData,
+    colors: productData.colors.filter((color) => color !== colorToRemove),
+  });
+};
+
+
   return (
     <Box
       sx={{
-        maxWidth: 600,
-        margin: "0 auto",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        
         padding: 3,
-        boxShadow: 3,
-        borderRadius: 2,
       }}
     >
-      <Typography variant="h5" gutterBottom>
-        Add Product
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 1200,
+          border:"1px solid rgb(104, 104, 104)",
+          boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
+          borderRadius: 2,
+          background: "linear-gradient(90deg, #232526, #414345)",
+          padding: 4,
+        }}
+      >
+        <Typography variant="h4" color="gold" align="center" gutterBottom>
+          Add Product
+        </Typography>
+        <Grid container spacing={4}>
+          {/* Left side: Form to add product details */}
+          <Grid item xs={12} sm={8}>
             <TextField
               label="Name"
-              variant="outlined"
               fullWidth
               name="name"
               value={productData.name}
               onChange={handleChange}
               required
+              sx={{
+                
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
             />
-          </Grid>
-          <Grid item xs={12}>
             <TextField
               label="Price"
-              variant="outlined"
               fullWidth
               type="number"
               name="price"
               value={productData.price}
               onChange={handleChange}
               required
+              sx={{
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
             />
-          </Grid>
-          <Grid item xs={12}>
             <TextField
               label="Description"
-              variant="outlined"
               fullWidth
               multiline
-              rows={4}
+              rows={3}
               name="description"
               value={productData.description}
               onChange={handleChange}
               required
+              sx={{
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
+          
             />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel>Category</InputLabel>
-              <Select
-                name="category"
-                value={productData.category}
-                onChange={handleChange}
-              >
-                {["Electronics", "Clothing", "Furniture"].map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {cat}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          {/* Sizes Selection */}
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel>Sizes</InputLabel>
-              <Select
-                name="sizes"
-                multiple
-                value={productData.sizes}
-                onChange={handleChange}
-              >
-                {["S", "M", "L", "XL", "XXL", "XXXL"].map((size) => (
-                  <MenuItem key={size} value={size}>
-                    {size}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          {/* Colors Selection */}
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel>Colors</InputLabel>
-              <Select
-                name="colors"
-                multiple
-                value={productData.colors}
-                onChange={handleChange}
-              >
-                {["Black", "Gray", "White","red", "green", "yellow"].map((color) => (
-                  <MenuItem key={color} value={color}>
-                    {color}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <input
-              accept="image/png, image/jpeg, image/jpg"
-              type="file"
-              onChange={handleFileChange}
+            <TextField
+              label="Category"
+              fullWidth
+              name="category"
+              value={productData.category}
+              onChange={handleChange}
               required
+              sx={{
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
             />
-          </Grid>
-          {productData.imagePreview && (
-            <Grid item sx={{marginLeft:"25%"}} xs={6}>
-              <img
-                src={productData.imagePreview}
-                alt="Preview"
-                style={{ width: "100%", borderRadius: 8, marginTop: 10 }}
-              />
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Button variant="contained" color="primary" type="submit" fullWidth>
-              Add Product
+
+            {/* Sizes Input */}
+            <TextField
+              label="Add Size"
+              fullWidth
+              value={sizeInput}
+              onChange={(e) => setSizeInput(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && addSize()}
+              sx={{
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
+            />
+            <Button
+              onClick={addSize}
+              sx={{ bgcolor: "black",
+                color: "white",
+                fontWeight: "bold",
+                "&:hover": { bgcolor: "gray",color: "black"},
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
+              variant="contained"
+              color="primary"
+            >
+              Add Size
             </Button>
+            <Box sx={{ marginBottom: 2 }}>
+              {productData.sizes.map((size) => (
+                <Chip  key={size} label={size} sx={{ fontWeight: "bold", backgroundColor:"gray",p:2, color:"black",margin: 0.5 }} />
+              ))}
+            </Box>
+
+            {/* Colors Input */}
+            <TextField
+              label="Add Color"
+              fullWidth
+              value={colorInput}
+              onChange={(e) => setColorInput(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && addColor()}
+              sx={{
+                marginBottom: 2,
+                "& label": { color: "gray" }, // Default label color
+                "& label.Mui-focused": { color: "white" }, // Focused label color
+                "& input": { color: "white" }, // User-typed text color
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
+                },
+              }}
+            />
+          
+<Button
+  onClick={addColor}
+  variant="contained"
+  sx={{
+    marginBottom: 2,
+    bgcolor: "black",
+    color: "white",
+    fontWeight: "bold",
+    "&:hover": { bgcolor: "gray", color: "black" },
+  }}
+>
+  Add Color
+</Button>
+            <Box sx={{ marginBottom: 2 }}>
+    {productData.colors.map((color) => (
+      <Chip
+        key={color}
+        label={color}
+        sx={{
+          fontWeight: "bold",
+          fontSize: 15,
+          backgroundColor: color, // Apply the color entered by the user as background
+          p: 1,
+          border: "1px solid rgba(255, 217, 0, 0.32)",
+          color: "black",
+          margin: 0.5,
+          position: "relative", // To position the close icon
+        }}
+        // Adding the delete icon
+        deleteIcon={
+          <DeleteIcon sx={{ color: "white", fontSize: 18 }} />
+        }
+        onDelete={() => removeColor(color)} // Calling the remove function
+      />
+    ))}
+  </Box>
+
+          </Grid>
+
+          {/* Right side: Image Upload Section */}
+          <Grid item xs={12} sm={4}>
+            <IconButton
+              onClick={() => setImageSectionOpen(!imageSectionOpen)}
+              sx={{ position: "absolute", top: 16, right: 16 }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Collapse in={imageSectionOpen}>
+              <Divider sx={{ marginBottom: 2 }} />
+              <Typography variant="h6" color="white" gutterBottom>
+                Product Image
+              </Typography>
+              {productData.imagePreview && (
+                <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+                  <img
+                    src={productData.imagePreview}
+                    alt="Preview"
+                    style={{ width: "100%", borderRadius: 8 }}
+                  />
+                </Box>
+              )}
+              <input
+                accept="image/png, image/jpeg, image/jpg"
+                type="file"
+                onChange={handleFileChange}
+                sx={{ marginBottom: 2 }}
+              />
+            </Collapse>
           </Grid>
         </Grid>
-      </form>
+
+        <Box sx={{ marginTop: 3 }}>
+          <Button
+            variant="contained"
+           
+            fullWidth
+            sx={{
+              bgcolor: "black",
+              color: "white",
+              fontWeight: "bold",
+              "&:hover": { bgcolor: "gold",color: "black"},
+            }}
+            onClick={handleSubmit}
+          >
+            Add Product
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 };

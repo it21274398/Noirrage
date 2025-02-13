@@ -3,6 +3,7 @@ import {
   Box,
   Typography,
   IconButton,
+  Button,
   Drawer,
   List,
   ListItem,
@@ -14,6 +15,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { ExitToApp } from '@mui/icons-material';
+
 
 const Navbar = ({ showNavBar }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
@@ -57,7 +60,7 @@ const Navbar = ({ showNavBar }) => {
       }}
     >
       {/* Logo */}
-      <a href="/home">
+      <a href="/admin/AdminDashboard">
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
             src={logo}
@@ -142,23 +145,27 @@ const Navbar = ({ showNavBar }) => {
             ))}
           </Box>
 
-          <Link
-            to="/"
-            onClick={() => handleLogout("admin")}
-            sx={{
-              fontSize: "1.2rem",
-              fontWeight: "500",
-              color: "red",
-              "&:hover": {
-                color: "#FFEB3B",
-                transform: "scale(1.1)",
-                transition:
-                  "transform 0.3s ease-in-out, color 0.3s ease-in-out",
-              },
-            }}
-          >
-            Logout
-          </Link>
+<Button
+  onClick={() => handleLogout("user")}
+  to="/"
+  sx={{
+    fontSize: "1rem",
+    color: "red",
+    backgroundColor: "#c6c6c600",
+    display: "flex",
+    alignItems: "center",
+    gap: 1, // Adds space between the icon and text
+    "&:hover": {
+      color: "#FFEB3B",
+      transform: "scale(1.1)",
+      transition: "transform 0.3s ease-in-out, color 0.3s ease-in-out",
+    },
+  }}
+>
+ 
+  Logout <ExitToApp sx={{ fontSize: 20 }} /> 
+</Button>
+
         </Box>
       )}
     </Box>

@@ -4,6 +4,7 @@ import {
   Typography,
   IconButton,
   Drawer,
+  Button,
   List,
   ListItem,
   ListItemText,
@@ -13,6 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import for navigation
 
 const Navbar = ({ showNavBar }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
@@ -20,7 +22,7 @@ const Navbar = ({ showNavBar }) => {
   const navigate = useNavigate();
 
   const handleLogout = (userType) => {
-    if (userType === "admin") {
+    if (userType === "user") {
       localStorage.removeItem("userToken");
     }
 
@@ -141,7 +143,7 @@ const Navbar = ({ showNavBar }) => {
             ))}
           </Box>
 
-          <Link
+          <Button
             onClick={() => handleLogout("user")}
             to="/"
             sx={{
@@ -157,7 +159,7 @@ const Navbar = ({ showNavBar }) => {
             }}
           >
             Logout
-          </Link>
+          </Button>
         </Box>
       )}
     </Box>

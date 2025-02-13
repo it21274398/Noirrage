@@ -64,7 +64,6 @@ const ProductList = () => {
     }
   };
 
-  
   return (
     <Box sx={{ padding: "20px" }}>
       {loading && (
@@ -82,7 +81,7 @@ const ProductList = () => {
           />
         </Box>
       )}
-  
+
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {!loading && products.length === 0 ? (
           <Typography
@@ -98,16 +97,15 @@ const ProductList = () => {
               <Card
                 sx={{
                   width: "75%",
-                 
+                  border: "1px solid rgba(109, 109, 109, 0.34)",
                   display: "flex",
                   flexDirection: "column",
                   padding: "20px",
                   margin: "10px", // Reduced margin here
                   borderRadius: 2,
                   background: "linear-gradient(45deg, #232526, #414345)",
-                  boxShadow: "0 4px 10px rgba(58, 58, 58, 0.76)",
+                  boxShadow: "0 4px 10px rgb(39, 38, 38)",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  
                 }}
               >
                 <Box
@@ -128,7 +126,6 @@ const ProductList = () => {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                 
                     }}
                   />
                 </Box>
@@ -137,29 +134,34 @@ const ProductList = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                   
+
                     padding: "10px",
                     textAlign: "center",
                   }}
                 >
                   <Typography
                     variant="h6"
-                    sx={{fontSize: "35px", fontWeight: 500, color: "#fdc200" }}
+                    sx={{ fontSize: "35px", fontWeight: 500, color: "#fdc200" }}
                   >
                     {product.name}
                   </Typography>
                   <Typography variant="h7" color="#d0d0d0">
-                  {product.description}
+                    {product.description}
                   </Typography>
                   <Typography
                     variant="h6"
                     color="text.secondary"
                     sx={{ mt: 1, color: "#fff" }}
-                  > Price: ${product.price}
-                    
+                  >
+                    {" "}
+                    Price: ${product.price}
                   </Typography>
-  
-                  <Grid container spacing={1} sx={{ mt: 1, justifyContent: "center" }}>
+
+                  <Grid
+                    container
+                    spacing={1}
+                    sx={{ mt: 1, justifyContent: "center" }}
+                  >
                     {/* Order Now Button */}
                     <Grid item xs={8}>
                       <Button
@@ -177,12 +179,11 @@ const ProductList = () => {
                         Order Now
                       </Button>
                     </Grid>
-  
+
                     {/* Add to Cart Button */}
                     <Grid item xs={2}>
                       <Button
                         sx={{
-                          
                           borderRadius: 10,
                           bgcolor: "#00000000",
                           color: "gold",
@@ -190,9 +191,10 @@ const ProductList = () => {
                           "&:hover": { color: "#1ac600" },
                         }}
                         onClick={() => handleAddToCart(product._id)} // Pass product ID
-                        
-                       
-                      > <ShoppingCartIcon /></Button>
+                      >
+                        {" "}
+                        <ShoppingCartIcon />
+                      </Button>
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -203,11 +205,6 @@ const ProductList = () => {
       </Grid>
     </Box>
   );
-  
-
-
-  
-
 };
 
 export default ProductList;

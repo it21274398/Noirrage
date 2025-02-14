@@ -40,8 +40,6 @@ const Profile = () => {
           toast.error("Unauthorized! Please log in.");
           return;
         }
-    
-        toast.error("Failed to fetch orders.");
       } finally {
         setPendingRequests((prev) => prev - 1);
       }
@@ -122,20 +120,20 @@ const Profile = () => {
           Your Orders
         </Typography>
         <Box
-  sx={{
-    display: "flex",
-    flexWrap: "wrap",  // Ensures cards move to the next row when needed
-    gap: 3, // Adds spacing between cards
-    justifyContent: "center", // Centers cards in the container
-  }}
->
+          sx={{
+            display: "flex",
+            flexWrap: "wrap", // Ensures cards move to the next row when needed
+            gap: 3, // Adds spacing between cards
+            justifyContent: "center", // Centers cards in the container
+          }}
+        >
           {orders && orders.length > 0 ? (
             orders.map((order) => (
               <Card
                 key={order._id}
                 sx={{
-                 width: "550px",
-                 border: "0.5px solid rgba(100, 100, 100, 0.41)",
+                  width: "550px",
+                  border: "0.5px solid rgba(100, 100, 100, 0.41)",
                   background: "linear-gradient(135deg, #232526, #414345)",
                   boxShadow: "0 6px 15px rgba(0, 0, 0, 0.7)",
                   borderRadius: "15px",
@@ -160,10 +158,9 @@ const Profile = () => {
                   </Typography>
                   <Divider
                     sx={{
-                   mt:3,
+                      mt: 3,
                       backgroundColor: "gray",
                       height: "0.2px",
-                      
                     }}
                   />
                   {/* Image on Left, Details on Right */}
@@ -201,7 +198,12 @@ const Profile = () => {
 
                     {/* Details in a Column */}
                     <Box
-                      sx={{ml:5, display: "flex", flexDirection: "column", gap: 2 }}
+                      sx={{
+                        ml: 5,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                      }}
                     >
                       <Typography
                         variant="h6"

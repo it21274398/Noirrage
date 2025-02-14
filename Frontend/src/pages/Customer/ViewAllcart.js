@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
   Grid,
+  CardMedia,
   Box,
   LinearProgress,
 } from "@mui/material";
@@ -18,6 +19,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("userToken");
   const navigate = useNavigate();
+  const [productImageState, setProductImageState] = useState({});
 
   useEffect(() => {
     if (!token) {
@@ -75,6 +77,14 @@ const Cart = () => {
     navigate("/CustomerOrder", { state: { productId } });
   };
 
+  const handleImageHover = (itemtId, hover) => {
+    setProductImageState((prevState) => ({
+      ...prevState,
+      [itemtId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+    }));
+  };
+
+  
   return (
     <Box sx={{ padding: "40px", minHeight: "100vh" }}>
       <Typography
@@ -137,24 +147,29 @@ const Cart = () => {
                     padding: "20px",
                   }}
                 >
-                  {/* Product Image */}
-                  <Box
-                    sx={{ flexShrink: 0, textAlign: "center", mr: { sm: 3 } }}
-                  >
-                    <img
-                      alt={item.product?.name}
-                      src={`http://localhost:5000${item.product?.image}`}
-                      style={{
-                        width: "100%",
-                        height: "230px",
-                        objectFit: "cover",
-                        borderRadius: 6,
-                        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
-                        transition: "transform 0.3s ease",
-                      }}
-                    />
-                  </Box>
+               
 
+                    <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
+                      <CardMedia
+                        component="img"
+                        height="250"
+                        image={`http://localhost:5000${
+                          item.product?.images[productImageState[item._id] || 0]
+                        }`} // Dynamic image index for each product
+                        alt={item.product?.name}
+                        id={`image-${item._id}`}
+                        sx={{
+                          transition: "transform 0.8s ease", // Slow down the rotation effect (1 second)
+                          transformStyle: "preserve-3d",
+                          ":hover": {
+                            transform: "rotateY(180deg)", // Rotate right to left
+                          },
+                        }}
+                        onMouseEnter={() => handleImageHover(item._id, true)} // Hover image
+                        onMouseLeave={() => handleImageHover(item._id, false)} // Default image
+                      />
+                    </Card>
+      
                   {/* Product Details */}
                   <Box ml={3} sx={{ flex: 1 }}>
                     <Typography

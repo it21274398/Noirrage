@@ -65,6 +65,7 @@ const ProductList = () => {
       toast.error(error.response?.data?.message || "Failed to add to cart.");
     }
   };
+
   const handleImageHover = (productId, hover) => {
     setProductImageState((prevState) => ({
       ...prevState,
@@ -127,17 +128,17 @@ const ProductList = () => {
                     borderRadius: 1,
                   }}
                 >
-                  <Card sx={{ maxWidth: 300, perspective: "1000px" }}>
+                  <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
                     <CardMedia
                       component="img"
-                      height="200"
+                      height="250"
                       image={`http://localhost:5000${
                         product.images[productImageState[product._id] || 0]
                       }`} // Dynamic image index for each product
                       alt={product.name}
                       id={`image-${product._id}`}
                       sx={{
-                        transition: "transform 0.6s ease", // Slow down the rotation effect (1 second)
+                        transition: "transform 0.8s ease", // Slow down the rotation effect (1 second)
                         transformStyle: "preserve-3d",
                         ":hover": {
                           transform: "rotateY(180deg)", // Rotate right to left

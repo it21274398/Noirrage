@@ -46,8 +46,8 @@ const Profile = () => {
         setName(data.name);
         setEmail(data.email);
       } catch (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Failed to fetch profile.");
+       
+       
       } finally {
         setPendingRequests((prev) => prev - 1); // Reduce pending requests
       }

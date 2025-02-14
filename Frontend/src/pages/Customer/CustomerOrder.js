@@ -5,7 +5,9 @@ import {
   Button,
   Typography,
   Box,
+  Card,
   IconButton,
+  CardMedia,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
@@ -84,6 +86,14 @@ const OrderForm = () => {
     navigate("/CustProductList"); // Redirect to Home page
   };
 
+
+  
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  if (!selectedProduct || !selectedProduct.images || selectedProduct.images.length === 0) {
+    return <p>No images available</p>;
+  }
+
   return (
     <Box
       sx={{
@@ -123,17 +133,42 @@ const OrderForm = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* Left Side - Product Image (40%) */}
             <Box sx={{ width: "35%", textAlign: "center" }}>
-              <img
-                alt={selectedProduct?.name}
-                src={`http://localhost:5000${selectedProduct?.image}`}
-                style={{
-                  width: "100%",
-                  boxShadow: "0px 12px 20px rgb(0, 0, 0), 0.88)",
-                  objectFit: "contain",
-                  borderRadius: "10px",
-                }}
-              />
+            <Card sx={{ boxShadow: "0px 12px 20px rgb(0, 0, 0)", height: 500, textAlign: "center", p: 2 }}>
+      {/* Main Image Preview */}
+      <CardMedia
+        component="img"
+      
+        image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
+        alt={selectedProduct.name}
+        sx={{ borderRadius: "10px", marginBottom: "10px" }}
+      />
+    </Card>
+      {/* Image Selection Thumbnails */}
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 2,mt:4}}>
+        {selectedProduct.images.map((img, index) => (
+          <Button
+            key={index}
+            onClick={() => setSelectedImageIndex(index)}
+            sx={{
+              minWidth: 50,
+              height: 50,
+              border:"1px solid black",
+              borderRadius: "3px",
+              backgroundImage: `url(http://localhost:5000${img})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              border: selectedImageIndex === index ? "2px solid  gold" : "2px solid transparent",
+            }}
+          />
+        ))}
+      </Box>
+
             </Box>
+            {selectedProduct && (
+  <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
+    
+  </Card>
+)}
 
             {/* Right Side - Order Form (60%) */}
             <Box

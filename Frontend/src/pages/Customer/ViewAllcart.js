@@ -156,7 +156,7 @@ const Cart = () => {
                       alt={item.product?.name}
                       id={`image-${item._id}`}
                       sx={{
-                        transition: "transform 1s ease", // Slow down the rotation effect (1 second)
+                        transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
                         transformStyle: "preserve-3d",
                         ":hover": {
                           transform: "rotateY(180deg)", // Rotate right to left

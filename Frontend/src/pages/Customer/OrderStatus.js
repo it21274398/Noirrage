@@ -8,6 +8,7 @@ import {
   Divider,
   Box,
   LinearProgress,
+  CardMedia,
   styled,
 } from "@mui/material";
 import axios from "axios";
@@ -184,9 +185,10 @@ const Profile = () => {
                         flexShrink: 0,
                       }}
                     >
-                      <img
-                        src={`http://localhost:5000${order.products[0]?.product?.image}`}
-                        alt={order.products[0]?.product?.name}
+                      <CardMedia
+                        component="img"
+                        image={`http://localhost:5000${order?.product?.images}`}
+                        alt={order?.products?.[0]?.product?.name}
                         style={{
                           width: "150px",
                           height: "150px",

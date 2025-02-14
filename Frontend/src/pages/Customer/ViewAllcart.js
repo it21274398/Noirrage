@@ -84,7 +84,6 @@ const Cart = () => {
     }));
   };
 
-  
   return (
     <Box sx={{ padding: "40px", minHeight: "100vh" }}>
       <Typography
@@ -147,29 +146,27 @@ const Cart = () => {
                     padding: "20px",
                   }}
                 >
-               
+                  <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
+                    <CardMedia
+                      component="img"
+                      height="250"
+                      image={`http://localhost:5000${
+                        item.product?.images[productImageState[item._id] || 0]
+                      }`} // Dynamic image index for each product
+                      alt={item.product?.name}
+                      id={`image-${item._id}`}
+                      sx={{
+                        transition: "transform 1s ease", // Slow down the rotation effect (1 second)
+                        transformStyle: "preserve-3d",
+                        ":hover": {
+                          transform: "rotateY(180deg)", // Rotate right to left
+                        },
+                      }}
+                      onMouseEnter={() => handleImageHover(item._id, true)} // Hover image
+                      onMouseLeave={() => handleImageHover(item._id, false)} // Default image
+                    />
+                  </Card>
 
-                    <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
-                      <CardMedia
-                        component="img"
-                        height="250"
-                        image={`http://localhost:5000${
-                          item.product?.images[productImageState[item._id] || 0]
-                        }`} // Dynamic image index for each product
-                        alt={item.product?.name}
-                        id={`image-${item._id}`}
-                        sx={{
-                          transition: "transform 0.8s ease", // Slow down the rotation effect (1 second)
-                          transformStyle: "preserve-3d",
-                          ":hover": {
-                            transform: "rotateY(180deg)", // Rotate right to left
-                          },
-                        }}
-                        onMouseEnter={() => handleImageHover(item._id, true)} // Hover image
-                        onMouseLeave={() => handleImageHover(item._id, false)} // Default image
-                      />
-                    </Card>
-      
                   {/* Product Details */}
                   <Box ml={3} sx={{ flex: 1 }}>
                     <Typography

@@ -1,6 +1,6 @@
-import Order from "../models/order.js";
+import Order from "../models/Order.js";
 import Product from "../models/Product.js";
-import mongoose from "mongoose"; // Add this line if mongoose is not already imported
+import mongoose from "mongoose";
 
 // @desc   Create a new order
 export const createOrder = async (req, res) => {
@@ -21,6 +21,7 @@ export const createOrder = async (req, res) => {
     }
 
     // Validate and check if each product has valid color and size selected
+    const orderProducts = [];
     for (let item of products) {
       const { product, size, color, quantity } = item;
 
@@ -50,11 +51,21 @@ export const createOrder = async (req, res) => {
           .status(400)
           .json({ message: `Invalid color selected for ${foundProduct.name}` });
       }
+
+      // Add the product details (including images) to the order
+      orderProducts.push({
+        product: foundProduct._id,
+        quantity,
+        size,
+        color,
+        images: foundProduct.images, // Add all images of the product
+      });
     }
 
+    // Create the new order
     const newOrder = new Order({
       user: req.user._id, // Assuming authentication middleware sets req.user
-      products,
+      products: orderProducts,
       totalPrice,
       shippingDetails,
       status: "Pending",
@@ -74,7 +85,7 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("user", "name email")
-      .populate("products.product", "name price sizes colors image");
+      .populate("products.product", "name price sizes colors images"); // Include images in the response
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -91,7 +102,7 @@ export const getUserOrders = async (req, res) => {
 
     const orders = await Order.find({ user: req.user._id }).populate(
       "products.product",
-      "name price sizes colors image"
+      "name price sizes colors images" // Include images in the response
     );
 
     // Check if no orders are found

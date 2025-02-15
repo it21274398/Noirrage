@@ -88,6 +88,20 @@ const Profile = () => {
     padding: "40px 0", // Adds spacing on top and bottom
   });
 
+  
+ // State to keep track of image index for each product (0: default, 1: hover)
+ const [productImageState, setProductImageState] = useState({});
+
+ const handleImageHover = (productId, hover) => {
+   setProductImageState((prevState) => ({
+     ...prevState,
+     [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+   }));
+ };
+ 
+
+ 
+  
   return (
     <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
       <FullWidthSection>
@@ -175,28 +189,28 @@ const Profile = () => {
                     }}
                   >
                     {/* Image on Left */}
-                    <Box
-                      sx={{
-                        borderRadius: "8px",
-                        p: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        image={`http://localhost:5000${order?.product?.images}`}
-                        alt={order?.products?.[0]?.product?.name}
-                        style={{
-                          width: "150px",
-                          height: "150px",
-                          objectFit: "contain",
-                          borderRadius: "5px",
-                        }}
-                      />
-                    </Box>
+                    {order?.products?.map((item) => (
+  <Card key={item?.product?._id} sx={{ maxWidth: 210, perspective: "1000px" }}>
+    <CardMedia
+      component="img"
+      height="250"
+      image={`http://localhost:5000${
+        item?.images[productImageState[item?.product?._id] || 0]
+      }`} // Dynamic image index for each product
+      alt={item?.product?.name}
+      id={`image-${item?.product?._id}`}
+      sx={{
+        transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+        transformStyle: "preserve-3d",
+        ":hover": {
+          transform: "rotateY(180deg)", // Rotate right to left
+        },
+      }}
+      onMouseEnter={() => handleImageHover(item?.product?._id, true)} // Hover image
+      onMouseLeave={() => handleImageHover(item?.product?._id, false)} // Default image
+    />
+  </Card>
+))}
 
                     {/* Details in a Column */}
                     <Box

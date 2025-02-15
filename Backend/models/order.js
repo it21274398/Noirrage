@@ -13,7 +13,7 @@ const orderSchema = new mongoose.Schema(
         quantity: { type: Number, required: true },
         size: { type: String, required: true }, // Store the selected size
         color: { type: String, required: true }, // Store the selected color
-        //image: { type: String }, // Optional image for the product
+        images: { type: [String], default: [] }, // Store multiple images for the product
       },
     ],
     totalPrice: { type: Number, required: true },

@@ -24,16 +24,16 @@ const OrderForm = () => {
   const [step, setStep] = useState(1); // Track current step
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [order, setOrder] = useState({ products: [] });
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+  const [availableColors, setAvailableColors] = useState([]);
+  const [availableSizes, setAvailableSizes] = useState([]);
   const [shippingDetails, setShippingDetails] = useState({
     email: "",
     address: "",
     contactNumber: "",
   });
-  const [availableColors, setAvailableColors] = useState([]);
-  const [availableSizes, setAvailableSizes] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const token = localStorage.getItem("userToken"); // Get token from localStorage
 
@@ -55,9 +55,6 @@ const OrderForm = () => {
     }
   };
 
-  const handleNext = () => setStep(2); // Go to next step (Shipping Details)
-  const handleBack = () => setStep(1); // Go to previous step (Product Selection)
-
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
@@ -65,8 +62,17 @@ const OrderForm = () => {
       return;
     }
 
+    // Prepare order data with multiple images
     const orderData = {
-      products: [{ product: selectedProduct?._id, quantity, size, color }],
+      products: [
+        {
+          product: selectedProduct?._id,
+          quantity,
+          size,
+          color,
+          images: selectedProduct?.images || [], // Include all images of the product
+        },
+      ],
       totalPrice: selectedProduct?.price * quantity,
       shippingDetails,
     };
@@ -86,9 +92,8 @@ const OrderForm = () => {
     navigate("/CustProductList"); // Redirect to Home page
   };
 
-
-  
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const handleNext = () => setStep(2); // Go to next step (Shipping Details)
+  const handleBack = () => setStep(1); // Go to previous step (Product Selection)
 
   if (!selectedProduct || !selectedProduct.images || selectedProduct.images.length === 0) {
     return <p>No images available</p>;
@@ -98,16 +103,16 @@ const OrderForm = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center", // Center horizontally
-        alignItems: "center", // Center vertically
-        height: "100vh", // Full viewport height
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
       }}
     >
       <Container maxWidth="xl">
         <Box
           sx={{
             p: 3,
-            position: "relative", // Ensures the button positions inside this box
+            position: "relative",
             boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
             borderRadius: 2,
             background: "linear-gradient(90deg, #232526, #414345)",
@@ -118,8 +123,8 @@ const OrderForm = () => {
             onClick={cancel}
             sx={{
               position: "absolute",
-              top: 8, // Position from the top inside the box
-              right: 8, // Position from the right inside the box
+              top: 8,
+              right: 8,
               color: "red",
               backgroundColor: "transparent",
               "&:hover": {
@@ -129,269 +134,154 @@ const OrderForm = () => {
           >
             <CloseIcon />
           </IconButton>
+
           {/* Flexbox for Left Image & Right Form */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* Left Side - Product Image (40%) */}
             <Box sx={{ width: "35%", textAlign: "center" }}>
-            <Card sx={{ boxShadow: "0px 12px 20px rgb(0, 0, 0)", height: 500, textAlign: "center", p: 2 }}>
-      {/* Main Image Preview */}
-      <CardMedia
-        component="img"
-      
-        image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
-        alt={selectedProduct.name}
-        sx={{ borderRadius: "10px", marginBottom: "10px" }}
-      />
-    </Card>
-      {/* Image Selection Thumbnails */}
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 2,mt:4}}>
-        {selectedProduct.images.map((img, index) => (
-          <Button
-            key={index}
-            onClick={() => setSelectedImageIndex(index)}
-            sx={{
-              minWidth: 50,
-              height: 50,
-              border:"1px solid black",
-              borderRadius: "3px",
-              backgroundImage: `url(http://localhost:5000${img})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              border: selectedImageIndex === index ? "2px solid  gold" : "2px solid transparent",
-            }}
-          />
-        ))}
-      </Box>
+              <Card
+                sx={{
+                  boxShadow: "0px 12px 20px rgb(0, 0, 0)",
+                  height: 500,
+                  textAlign: "center",
+                  p: 2,
+                }}
+              >
+                {/* Main Image Preview */}
+                <CardMedia
+                  component="img"
+                  image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
+                  alt={selectedProduct.name}
+                  sx={{ borderRadius: "10px", marginBottom: "10px" }}
+                />
+              </Card>
 
+              {/* Image Selection Thumbnails */}
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 4 }}>
+                {selectedProduct.images.map((img, index) => (
+                  <Button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    sx={{
+                      minWidth: 50,
+                      height: 50,
+                      border: "1px solid black",
+                      borderRadius: "3px",
+                      backgroundImage: `url(http://localhost:5000${img})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      border: selectedImageIndex === index ? "2px solid gold" : "2px solid transparent",
+                    }}
+                  />
+                ))}
+              </Box>
             </Box>
-            {selectedProduct && (
-  <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
-    
-  </Card>
-)}
 
             {/* Right Side - Order Form (60%) */}
-            <Box
-              sx={{
-                width: "60%",
-                p: 3,
-
-                borderRadius: 2,
-              }}
-            >
+            <Box sx={{ width: "60%", p: 3, borderRadius: 2 }}>
               <form onSubmit={handleOrderSubmit}>
-                {/*------------------------------------------------------------ Product details------------------------------------------------------------*/}
+                {/* Step 1: Product Details */}
                 {step === 1 && selectedProduct && (
                   <>
                     <Typography
                       variant="h5"
-                      sx={{
-                        fontFamily: "'Raleway', sans-serif",
-                        fontSize: "2em",
-                      }}
+                      sx={{ fontFamily: "'Raleway', sans-serif", fontSize: "2em" }}
                       color="#fdc200"
                       mb={5}
                     >
                       Fill Order Details of {selectedProduct.name}
                     </Typography>
 
-                    <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-                    >
-                      {/* Color & Size Row */}
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-evenly",
-
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        {/* Quantity Selector */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1,
-                          }}
-                        >
-                          <Typography
-                            color="white"
-                            variant="subtitle1"
-                            fontWeight="bold"
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: 12 }}>
+                      {/* Quantity Selector */}
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Typography color="white" variant="subtitle1" fontWeight="bold">
+                          Quantity
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <IconButton
+                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+                            sx={{ color: "white", border: "1px solid #ccc", borderRadius: "500px" }}
                           >
-                            Quantity
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                              width: "fit-content",
-                            }}
+                            <Remove />
+                          </IconButton>
+                          <TextField
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(Math.max(Number(e.target.value), 1))}
+                            inputProps={{ min: 1, style: { color: "white", textAlign: "center" } }}
+                            sx={{ width: "50px" }}
+                          />
+                          <IconButton
+                            onClick={() => setQuantity((prev) => prev + 1)}
+                            sx={{ color: "white", border: "1px solid #ccc", borderRadius: "500px" }}
                           >
-                            <IconButton
-                              onClick={() =>
-                                setQuantity((prev) => Math.max(prev - 1, 1))
-                              }
-                              sx={{
-                                color: "white",
-                                border: "1px solid #ccc",
-                                borderRadius: "500px",
-                              }}
-                            >
-                              <Remove />
-                            </IconButton>
-                            <TextField
-                              type="number"
-                              value={quantity}
-                              onChange={(e) =>
-                                setQuantity(Math.max(Number(e.target.value), 1))
-                              }
-                              inputProps={{
-                                min: 1,
-                                style: {
-                                  fontWeight: "bold",
-                                  color: "white",
-                                  border: "1px solid #ccc",
-                                  textAlign: "center",
-                                  padding: "10px",
-                                  MozAppearance: "textfield", // Firefox
-                                },
-                              }}
-                              sx={{
-                                width: "50px",
-                                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                                  {
-                                    WebkitAppearance: "none",
-                                    margin: 0,
-                                  },
-                              }}
-                            />
-
-                            <IconButton
-                              onClick={() => setQuantity((prev) => prev + 1)}
-                              sx={{
-                                color: "white",
-                                border: "1px solid #ccc",
-                                borderRadius: "500px",
-                              }}
-                            >
-                              <Add />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                        {/* Color Selector */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1,
-                          }}
-                        >
-                          <Typography
-                            color="white"
-                            variant="subtitle1"
-                            fontWeight="bold"
-                          >
-                            Pick a Color
-                          </Typography>
-                          <ToggleButtonGroup
-                            value={color}
-                            exclusive
-                            onChange={(e) => setColor(e.target.value)}
-                            aria-label="color selection"
-                            sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
-                          >
-                            {availableColors.length > 0 ? (
-                              availableColors.map((color, index) => (
-                                <ToggleButton
-                                  key={index}
-                                  value={color}
-                                  sx={{
-                                    fontSize: 12,
-                                    backgroundColor: color.toLowerCase(),
-                                    color: "white",
-                                    border: "1px solid black",
-                                    fontWeight: "bold",
-                                    "&.Mui-selected": {
-                                      border: "1px solid black",
-
-                                      color: "black",
-                                    },
-                                    "&:hover": { opacity: 0.8 },
-                                  }}
-                                >
-                                  {color}
-                                </ToggleButton>
-                              ))
-                            ) : (
-                              <ToggleButton value="" disabled>
-                                No colors available
-                              </ToggleButton>
-                            )}
-                          </ToggleButtonGroup>
-                        </Box>
-
-                        {/* Size Selector */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1,
-                          }}
-                        >
-                          <Typography
-                            color="white"
-                            variant="subtitle1"
-                            fontWeight="bold"
-                          >
-                            Available Sizes
-                          </Typography>
-                          <ToggleButtonGroup
-                            value={size}
-                            exclusive
-                            onChange={(e) => setSize(e.target.value)}
-                            aria-label="size selection"
-                            sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
-                          >
-                            {availableSizes.length > 0 ? (
-                              availableSizes.map((sizeOption, index) => (
-                                <ToggleButton
-                                  key={index}
-                                  value={sizeOption}
-                                  sx={{
-                                    color: "black",
-                                    backgroundColor: "#c6c6c6",
-                                    border: "1px solid #ccc",
-                                    fontWeight: "bold",
-                                    "&.Mui-selected": {
-                                      border: "1px solid black",
-                                      backgroundColor: "black",
-                                      color: "white",
-                                    },
-                                    "&:hover": { backgroundColor: "#e0e0e0" },
-                                  }}
-                                >
-                                  {sizeOption}
-                                </ToggleButton>
-                              ))
-                            ) : (
-                              <ToggleButton value="" disabled>
-                                No sizes available
-                              </ToggleButton>
-                            )}
-                          </ToggleButtonGroup>
+                            <Add />
+                          </IconButton>
                         </Box>
                       </Box>
+
+                      {/* Color Selector */}
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Typography color="white" variant="subtitle1" fontWeight="bold">
+                          Pick a Color
+                        </Typography>
+                        <ToggleButtonGroup
+                          value={color}
+                          exclusive
+                          onChange={(e) => setColor(e.target.value)}
+                          aria-label="color selection"
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                        >
+                          {availableColors.map((color, index) => (
+                            <ToggleButton
+                              key={index}
+                              value={color}
+                              sx={{
+                                backgroundColor: color.toLowerCase(),
+                                color: "white",
+                                border: "1px solid black",
+                                "&.Mui-selected": { border: "2px solid gold" },
+                              }}
+                            >
+                              {color}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </Box>
+
+                      {/* Size Selector */}
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Typography color="white" variant="subtitle1" fontWeight="bold">
+                          Available Sizes
+                        </Typography>
+                        <ToggleButtonGroup
+                          value={size}
+                          exclusive
+                          onChange={(e) => setSize(e.target.value)}
+                          aria-label="size selection"
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                        >
+                          {availableSizes.map((sizeOption, index) => (
+                            <ToggleButton
+                              key={index}
+                              value={sizeOption}
+                              sx={{
+                                color: "black",
+                                backgroundColor: "#c6c6c6",
+                                border: "1px solid #ccc",
+                                "&.Mui-selected": { backgroundColor: "black", color: "white" },
+                              }}
+                            >
+                              {sizeOption}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </Box>
                     </Box>
-                    {/*------------------------------------------------------------ Shipping details------------------------------------------------------------*/}
-                    <Typography
-                      color="#d7d7d7"
-                      mt={3}
-                      variant="h5"
-                      gutterBottom
-                    >
+
+                    {/* Shipping Details */}
+                    <Typography color="#d7d7d7" mt={3} variant="h5" gutterBottom>
                       Shipping Details
                     </Typography>
                     <TextField
@@ -400,14 +290,9 @@ const OrderForm = () => {
                       fullWidth
                       margin="normal"
                       value={shippingDetails.email}
-                      onChange={(e) =>
-                        setShippingDetails({
-                          ...shippingDetails,
-                          email: e.target.value,
-                        })
-                      }
+                      onChange={(e) => setShippingDetails({ ...shippingDetails, email: e.target.value })}
                       sx={{
-                        "& label": { color: "white" }, // Default label color
+                        "& label": { color: "gray" }, // Default label color
                         "& label.Mui-focused": { color: "white" }, // Focused label color
                         "& input": { color: "white" }, // User-typed text color
                         "& .MuiOutlinedInput-root": {
@@ -421,14 +306,9 @@ const OrderForm = () => {
                       fullWidth
                       margin="normal"
                       value={shippingDetails.address}
-                      onChange={(e) =>
-                        setShippingDetails({
-                          ...shippingDetails,
-                          address: e.target.value,
-                        })
-                      }
+                      onChange={(e) => setShippingDetails({ ...shippingDetails, address: e.target.value })}
                       sx={{
-                        "& label": { color: "white" }, // Default label color
+                        "& label": { color: "gray" }, // Default label color
                         "& label.Mui-focused": { color: "white" }, // Focused label color
                         "& input": { color: "white" }, // User-typed text color
                         "& .MuiOutlinedInput-root": {
@@ -442,14 +322,9 @@ const OrderForm = () => {
                       fullWidth
                       margin="normal"
                       value={shippingDetails.contactNumber}
-                      onChange={(e) =>
-                        setShippingDetails({
-                          ...shippingDetails,
-                          contactNumber: e.target.value,
-                        })
-                      }
+                      onChange={(e) => setShippingDetails({ ...shippingDetails, contactNumber: e.target.value })}
                       sx={{
-                        "& label": { color: "white" }, // Default label color
+                        "& label": { color: "gray" }, // Default label color
                         "& label.Mui-focused": { color: "white" }, // Focused label color
                         "& input": { color: "white" }, // User-typed text color
                         "& .MuiOutlinedInput-root": {
@@ -458,6 +333,8 @@ const OrderForm = () => {
                       }}
                       required
                     />
+
+                    {/* Next Button */}
                     <Button
                       variant="contained"
                       color="primary"
@@ -468,14 +345,9 @@ const OrderForm = () => {
                         mr: 6,
                         mb: 4,
                         bgcolor: "black",
-                        // background: "linear-gradient(180deg ,rgba(0, 0, 0, 0.78) , #434343,rgba(0, 0, 0, 0.81))" ,
                         color: "white",
                         fontWeight: "bold",
-                        "&:hover": {
-                          color: "black",
-                          bgcolor: "gold",
-                          boxShadow: "0px 0px 10px rgba(159, 159, 159, 0.88)",
-                        },
+                        "&:hover": { color: "black", bgcolor: "gold" },
                       }}
                       onClick={handleNext}
                     >
@@ -484,7 +356,7 @@ const OrderForm = () => {
                   </>
                 )}
 
-                {/* Step 2: Shipping details */}
+                {/* Step 2: Confirm Order */}
                 {step === 2 && (
                   <>
                     <Button
@@ -500,8 +372,7 @@ const OrderForm = () => {
                       variant="contained"
                       sx={{
                         mt: 2,
-                        background:
-                          "linear-gradient(90deg,  #FFD200 , #F7971E, #FFD200)",
+                        background: "linear-gradient(90deg, #FFD200, #F7971E, #FFD200)",
                       }}
                       type="submit"
                       fullWidth
@@ -512,8 +383,7 @@ const OrderForm = () => {
                 )}
               </form>
             </Box>
-          </Box>{" "}
-          <br /> <br />
+          </Box>
         </Box>
       </Container>
     </Box>

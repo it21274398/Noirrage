@@ -9,7 +9,11 @@ import {
   CardMedia,
   CardActions,
   Chip,
+  FormControl,
+  MenuItem,
+  Select,
   Collapse,
+  InputLabel,
   Card,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +99,7 @@ const AddProduct = () => {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-
+      window.location.reload();
       toast.success("Product added successfully!");
       console.log("Product added:", response.data);
     } catch (error) {
@@ -214,23 +218,28 @@ const AddProduct = () => {
                   },
                 }}
               />
-              <TextField
-                label="Category"
-                fullWidth
-                name="category"
-                value={productData.category}
-                onChange={handleChange}
-                required
-                sx={{
-                  marginBottom: 2,
-                  "& label": { color: "gray" }, // Default label color
-                  "& label.Mui-focused": { color: "white" }, // Focused label color
-                  "& input": { color: "white" }, // User-typed text color
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ffd9008f" }, // Default border color
-                  },
-                }}
-              />
+              <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                <InputLabel sx={{ color: "gray" }}>Category</InputLabel>
+                <Select
+                  name="category"
+                  value={productData.category}
+                  onChange={handleChange}
+                  required
+                  sx={{
+                    color: "white", // Selected text color
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#ffd9008f",
+                    }, // Border color
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    }, // Focused border color
+                  }}
+                >
+                  <MenuItem value="Men">Men</MenuItem>
+                  <MenuItem value="Women">Women</MenuItem>
+                  <MenuItem value="Kids">Kids</MenuItem>
+                </Select>
+              </FormControl>
 
               {/* Sizes Input */}
               <TextField

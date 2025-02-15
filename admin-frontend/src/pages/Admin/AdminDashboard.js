@@ -349,6 +349,41 @@ const AdminDashboard = () => {
           </TableBody>
         </Table>
       </TableContainer>
+<Typography variant="h5" sx={{ mb: 2, color: "#fff" }}>
+        Pending Orders
+      </Typography>
+
+      <TableContainer component={Paper} sx={{ backgroundColor: "#1e1e1e", color: "#fff" }}>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ color: "#fff" }}>Customer Email</TableCell>
+        <TableCell sx={{ color: "#fff" }}>Product</TableCell>
+        <TableCell sx={{ color: "#fff" }}>Quantity</TableCell>
+        <TableCell sx={{ color: "#fff" }}>Total Price</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {orders
+        .filter((order) => order.status === "Shipped")
+        .map((order) => (
+          <TableRow key={order._id}>
+            <TableCell sx={{ color: "#fff" }}>{order.shippingDetails.email}</TableCell>
+            <TableCell>
+              {order.products.map((item) => (
+                <Box key={item.product?._id} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography sx={{ color: "#fff" }}>{item.product?.name}</Typography>
+                </Box>
+              ))}
+            </TableCell>
+            <TableCell sx={{ color: "#fff" }}>{order.products.length}</TableCell>
+            <TableCell sx={{ color: "#fff" }}>${order.totalPrice.toFixed(2)}</TableCell>
+          </TableRow>
+        ))}
+    </TableBody>
+  </Table>
+</TableContainer>
+
     </Container>
   );
 };

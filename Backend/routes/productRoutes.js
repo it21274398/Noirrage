@@ -10,10 +10,11 @@ import { upload } from "../middleware/uploadMiddleware.js"; // ✅ Fix import
 
 const router = express.Router();
 
-router.post("/add", upload.single("image"), addProduct); // Admin: Add product with image
+// ✅ Allow multiple image uploads (Change `single` to `array`)
+router.post("/add", upload.array("images", 5), addProduct); // Admin: Add product with multiple images
 router.get("/", getProducts); // Users: Get all products
 router.get("/:id", getProductById); // Users: Get single product
-router.put("/:id", upload.single("image"), updateProduct); // Admin: Update product
+router.put("/:id", upload.array("images", 5), updateProduct); // Admin: Update product (multiple images support)
 router.delete("/:id", deleteProduct); // Admin: Delete product
 
 export default router;

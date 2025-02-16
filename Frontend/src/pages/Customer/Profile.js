@@ -6,13 +6,18 @@ import {
   CardContent,
   Button,
   Modal,
+  Divider,
   Box,
+  Fade,
   LinearProgress,
   TextField,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ViewAllcart from "./ViewAllcart";
+import { styled } from "@mui/system";
+import { Person, Email, Edit } from "@mui/icons-material";
+import Orderstatus from "./OrderStatus";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -41,31 +46,14 @@ const Profile = () => {
         setName(data.name);
         setEmail(data.email);
       } catch (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Failed to fetch profile.");
+       
+       
       } finally {
         setPendingRequests((prev) => prev - 1); // Reduce pending requests
       }
     };
 
-    const getUserOrders = async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/orders/byid",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setOrders(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        toast.error("Failed to fetch orders.");
-      } finally {
-        setPendingRequests((prev) => prev - 1);
-      }
-    };
-
     fetchProfile();
-    getUserOrders();
   }, [token]);
 
   // Set loading to false when all requests complete
@@ -99,147 +87,119 @@ const Profile = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId, orderStatus, event) => {
-    event.preventDefault(); // Prevent default behavior
-  
-    // Prevent cancellation if order is already shipped
-    if (orderStatus === "Shipped") {
-      toast.error("Order has already been shipped and cannot be canceled.");
-      return;
-    }
-  
-    if (!token) {
-      toast.error("Unauthorized! Please log in.");
-      return;
-    }
-  
-    try {
-      const { data } = await axios.delete(
-        `http://localhost:5000/api/orders/${orderId}/deleted`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Order deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      toast.error(error.response?.data?.message || "Failed to delete order.");
-    }
-  };
-  
-
+  const FullWidthSection = styled(Box)({
+    width: "100%", // Ensures full width
+    padding: "40px 0", // Adds spacing on top and bottom
+  });
   return (
-    <Container>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        User Profile
-      </Typography>
+    <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
+      <FullWidthSection>
+        <Typography variant="h4" sx={{ mb: 3 }}>
+          User Profile
+        </Typography>
 
-      {loading ? (
-        <Box sx={{ width: "100%", mb: 2 }}>
-          <LinearProgress color="primary" />
-        </Box>
-      ) : user ? (
-        <Card
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            p: 2,
-            mb: 5,
-            bgcolor: "#f5f5f5",
-            borderRadius: 2,
-            boxShadow: 3,
-          }}
-        >
-          <CardContent sx={{ flexGrow: 1 }}>
-            <Typography variant="h6">Name: {user.name}</Typography>
-            <Typography variant="h6">Email: {user.email}</Typography>
-          </CardContent>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpen}
-            sx={{ height: "40px", minWidth: "120px" }}
+        {loading ? (
+          <Box >
+            
+          </Box>
+        ) : user ? (
+          <Card
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              px: 1.5,
+              mb: 5,
+              bgcolor: "rgba(163, 164, 74, 0.3)",
+              borderRadius: 20,
+              color: "black",
+
+              border: "1px solid rgba(255, 215, 0, 0.2)",
+            }}
           >
-            Edit Profile
-          </Button>
-        </Card>
-      ) : (
-        <Typography>No profile data found.</Typography>
-      )}
-      {orders && orders.length > 0 ? (
-        orders.map((order) => (
-          <Card key={order._id} sx={{ mb: 2, p: 2 }}>
-            <CardContent>
-              {order.products?.map((item) => (
-                <Box>
-                  <img
-                    alt={item.product?.name}
-                    src={`http://localhost:5000${item.product?.image}`}
-                    style={{
-                      width: "50%",
-                      maxHeight: "150px",
-                      objectFit: "contain",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </Box>
-              ))}
-              <Typography variant="body1" display="flex" alignItems="center">
-                Status: {order.status}
-                <Box
-                  sx={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: "50%",
-                    backgroundColor:
-                      order.status === "Shipped" ? "#4CAF50" : "#F44336",
-                    ml: 1, // Adds spacing between text and dot
-                  }}
-                />
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 3,
+                flexGrow: 1,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Person sx={{ ml: 1, color: "black" }} /> {user.name}
               </Typography>
-
-              <Typography variant="body1">
-                Total: ${order.totalPrice}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Email sx={{ ml: 5, color: "black" }} /> {user.email}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Ordered on: {new Date(order.createdAt).toLocaleDateString()}
-              </Typography>
-
-              {/* Display ordered products */}
-              {order.items?.map((item) => (
-                <Card key={item._id} sx={{ mt: 1, p: 1, bgcolor: "#f5f5f5" }}>
-                  <Typography variant="body1">
-                    {item.productName} - ${item.price} x {item.quantity}
-                  </Typography>
-                </Card>
-              ))}
             </CardContent>
+
             <Button
-  variant="contained"
-  color="primary"
-  onClick={(event) => handleCancelOrder(order._id, order.status, event)}
-  fullWidth
->
-  Cancel Order
-</Button>
-
+              variant="contained"
+              onClick={handleOpen}
+              sx={{
+                height: "45px",
+                minWidth: "130px",
+                bgcolor: "gold",
+                color: "black",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                borderRadius: 50,
+                "&:hover": {
+                  bgcolor: "black",
+                  color: "gold",
+                },
+              }}
+            >
+              <Edit /> Edit Profile
+            </Button>
           </Card>
-        ))
-      ) : (
-        <Typography>No orders found.</Typography>
-      )}
+        ) : (
+          <Typography>No profile data found.</Typography>
+        )}
 
-      {/* Edit Profile Modal */}
+        <Orderstatus />
+        {/* Edit Profile Modal */}
+
+         {/* Edit Profile Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
+            background: "linear-gradient(90deg, #232526, #232526)",
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
+            "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
             boxShadow: 24,
-            p: 3,
+            p: 4,
             borderRadius: 2,
           }}
         >
@@ -263,17 +223,32 @@ const Profile = () => {
             sx={{ mb: 2 }}
           />
           <Button
-            variant="contained"
-            color="primary"
+            
+            
             onClick={handleUpdateProfile}
-            fullWidth
+            sx={{
+              bgcolor: "gold",
+              color: "black",
+              fontWeight: "bold",
+              "&:hover": { bgcolor: "gray" },
+            }}
           >
             Save Changes
           </Button>
         </Box>
       </Modal>
 
-      <ViewAllcart />
+        <Divider
+          sx={{
+            border: "1px solid black",
+            backgroundColor: "#FFD700",
+            height: "0.8px",
+            my: 2,
+          }}
+        />
+
+        <ViewAllcart />
+      </FullWidthSection>
     </Container>
   );
 };

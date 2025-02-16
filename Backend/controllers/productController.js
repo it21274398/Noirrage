@@ -1,52 +1,92 @@
 import Product from "../models/Product.js";
 
-// ✅ Add a new product with image upload and sizes/colors handling
 export const addProduct = async (req, res) => {
   try {
     const { name, price, description, category, sizes, colors } = req.body;
 
+    // Check if required fields are provided
     if (!name || !price || !description || !category || !sizes || !colors) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Ensure sizes and colors are arrays
-    const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
-    const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
+    // Ensure price is a valid number
+    if (isNaN(price) || Number(price) <= 0) {
+      return res.status(400).json({ message: "Invalid price value." });
+    }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    // Convert sizes and colors to arrays if needed
+    const sizesArray = Array.isArray(sizes)
+      ? sizes
+      : sizes.split(",").map((s) => s.trim());
+    const colorsArray = Array.isArray(colors)
+      ? colors
+      : colors.split(",").map((c) => c.trim());
 
+    // Ensure sizes and colors are not empty
+    if (sizesArray.length === 0 || colorsArray.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Sizes and colors cannot be empty." });
+    }
+
+    // Handle multiple image uploads
+    const imageUrls =
+      req.files?.map((file) => `/uploads/${file.filename}`) || [];
+
+    // Check if at least one image is uploaded
+    if (imageUrls.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "At least one image is required." });
+    }
+
+    // Create new product instance
     const newProduct = new Product({
       name,
-      price,
+      price: Number(price), // Ensure price is stored as a number
       description,
       category,
       sizes: sizesArray,
       colors: colorsArray,
-      image: imageUrl,
+      images: imageUrls,
     });
 
+    // Save product to database
     await newProduct.save();
-    return res.status(201).json({ message: "Product added successfully", product: newProduct });
+
+    return res.status(201).json({
+      message: "Product added successfully",
+      product: newProduct,
+    });
   } catch (error) {
-    console.error("Error adding product:", error); // ✅ Log error
-    return res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error adding product:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
-// ✅ Get all products (with sizes and colors)
+// ✅ Get all products (with sizes, colors, and multiple images)
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().select(
+      "name price description category images sizes colors"
+    );
+
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Get single product (with sizes and colors)
+// ✅ Get single product (with sizes, colors, and multiple images)
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).select(
+      "name price description category images sizes colors"
+    );
+
     if (!product) return res.status(404).json({ message: "Product not found" });
 
     res.status(200).json(product);
@@ -59,14 +99,25 @@ export const getProductById = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { name, price, description, category, colors, sizes } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // Convert sizes and colors to arrays if needed
+    // Convert sizes and colors to arrays
     const sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",");
     const colorsArray = Array.isArray(colors) ? colors : colors.split(",");
 
-    const updatedFields = { name, price, description, category, colors: colorsArray, sizes: sizesArray };
-    if (imageUrl) updatedFields.image = imageUrl;
+    // Handle multiple images
+    const imageUrls = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : [];
+
+    const updatedFields = {
+      name,
+      price,
+      description,
+      category,
+      colors: colorsArray,
+      sizes: sizesArray,
+    };
+    if (imageUrls.length) updatedFields.images = imageUrls;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -76,8 +127,10 @@ export const updateProduct = async (req, res) => {
 
     if (!updatedProduct)
       return res.status(404).json({ message: "Product not found" });
-
-    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
